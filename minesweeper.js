@@ -6,6 +6,8 @@ let game = []
 let currentFlags = 10
 let seconds = 0;
 let stopwatchInterval;
+let startTimeInMs;
+let endTimeInMs;
 
 function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
 	seconds = 0
@@ -89,14 +91,16 @@ function setJSONHighScores() {
 		for (const [key, value] of Object.entries(storedData)) {
 			currentRecords = document.querySelectorAll("."+key+"_high_self")
 			for (i = 1; i <= value.length; i++) {
+				let secondsHS = Math.floor(value[i-1] / 1000)
+				let millisecondsHS = value[i-1] % 1000
 				if (key==="expert") {
-					document.querySelector("#ehs-"+i).textContent = value[i-1]+"s"
+					document.querySelector("#ehs-"+i).textContent = secondsHS + "." + millisecondsHS +"s"
 				}
 				else if (key==="int") {
-					document.querySelector("#eis-"+i).textContent = value[i-1]+"s"
+					document.querySelector("#eis-"+i).textContent = secondsHS + "." + millisecondsHS +"s"
 				}
 				else if (key==="easy") {
-					document.querySelector("#hes-"+i).textContent = value[i-1]+"s"
+					document.querySelector("#hes-"+i).textContent = secondsHS + "." + millisecondsHS +" s"
 				}
 			}
 		}
@@ -105,9 +109,16 @@ function setJSONHighScores() {
 setJSONHighScores()
 
 function updateJSONHighScores(newScore) {
+
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
+		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0)
+		localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
+		alert("High scores were fixed, so old high scores got deleted")
+	}
+
 	if (storedData[hardness].length >= 10) {
-		if (newScore < storedData[9]) {
+		if (newScore < storedData[hardness][9]) {
 			storedData[hardness].pop()
 			storedData[hardness].push(newScore)
 			storedData[hardness].sort()
@@ -183,12 +194,12 @@ function makeTheGameHTML2(previousFlags = []){
 
 function handleButtonClick(event) {
 	gameStatus = document.querySelector(".game-status")
-  	if ((gameStatus.id === "start") || (gameStatus.id === "lose")){
+	if (event.target.classList.contains("flagged") || event.target.classList.contains("closed")){
+  		return 0;
+  	}
+  	else if ((gameStatus.id === "start") || (gameStatus.id === "lose")){
     	onFirstClick(event);
   	} 
-  	else if (event.target.classList.contains("flagged")){
-  		return 0
-  	}
   	else {
     	inGameButtonClick(event.target);
   	}
@@ -235,6 +246,14 @@ function changeTheElement(element, action) {
 		return 0
 
 	}
+	else if (action === "openFlag") {
+		parentOfElement = element.parentElement
+		idArray = element.id.split("/")
+		element.remove()
+		parentOfElement.classList.add("opened-div")
+		let revealedText = game[idArray[0]][idArray[1]] === 0 ? " " : game[idArray[0]][idArray[1]];
+		parentOfElement.textContent = revealedText
+	}
 	else if (action === "flag") {
 		if (!(element.classList.contains("flagged"))) {
 			currentFlags--;
@@ -242,8 +261,23 @@ function changeTheElement(element, action) {
 			element.classList.add("flagged")
 			element.innerHTML = "f";
 		}
-		
 	}
+	else if (action === "close") {
+		element.classList.add("closed")
+	}
+}
+
+function openTilesAfterLose() {
+	allClosedTiles = document.querySelectorAll(".game-button");
+	allClosedTiles.forEach((el)=>{
+		idArray = el.id.split("/");
+		if (game[idArray[0]][idArray[1]] == -1) {
+			changeTheElement(el, "openFlag")
+		}
+		else {
+			changeTheElement(el, "close")
+		}
+	});
 }
 
 function inGameButtonClick(eventTarget) {
@@ -252,11 +286,12 @@ function inGameButtonClick(eventTarget) {
 
     if (game[idArray[0]][idArray[1]] == -1) {
     	changeTheElement(eventTarget.id, "open")
-    	resetStopwatch()
-    	alert("You lost the game!")
+    	stopStopwatch()
     	gameStatus = document.querySelector(".game-status")
 		gameStatus.id = "lose"
-        makeTheMineLawn(rowsG, colsG, idArray[0], idArray[1]);
+		gameStatus.textContent = "You jost lost to the mine :("
+		openTilesAfterLose()
+        //makeTheMineLawn(rowsG, colsG, idArray[0], idArray[1]);
     } else {
         let result = new Set();
         function checkAllDirections(x, y) {
@@ -290,7 +325,11 @@ function inGameButtonClick(eventTarget) {
     	document.querySelectorAll(".game-button").forEach(button => {
 		    button.textContent = "f";
 		});
-		updateJSONHighScores(seconds)
+		endTimeInMs = new Date().getTime();
+		intervalInMs = endTimeInMs - startTimeInMs;
+
+		updateStopwatchWithMs(intervalInMs % 1000) // Last three digits, that is, the milliseconds
+		updateJSONHighScores(intervalInMs)
     	return 0;
     }
 }
@@ -341,7 +380,6 @@ function eventListenerForOpened() {
 document.querySelector(".game-status").addEventListener("click", function() {
 	resetStopwatch()
     makeTheMineLawn(rowsG, colsG);
-
 });
 
 
@@ -422,6 +460,7 @@ function flagSurroundingElements(event) {
 
 
 document.querySelector(".new-box-button").addEventListener("click", function() {
+	closeNavMenus()
 	boxRadios = document.getElementsByName("box_size")
 	resetStopwatch()
 
@@ -465,8 +504,14 @@ function updateStopwatch() {
     document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds} seconds`;
 }
 
+function updateStopwatchWithMs(ms) {
+	const formattedSeconds = seconds < 1000 ? padWithZeros(seconds) : seconds;
+	document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds} seconds ${ms} ms`;
+}
+
 function startStopwatch() {
     stopwatchInterval = setInterval(updateStopwatch, 1000);
+    startTimeInMs = new Date().getTime();
 }
 
 function stopStopwatch() {
@@ -475,10 +520,47 @@ function stopStopwatch() {
 
 function resetStopwatch() {
     seconds = 0;
+    startTimeInMs = 0;
+    endTimeInMs = 0;
     document.querySelector('.time-stopwatch').innerHTML = '000 seconds';
     stopStopwatch();
 }
 
 function padWithZeros(number) {
     return String(number).padStart(3, '0');
+}
+
+function padWithZerosMs(number) {
+    return String(number).padStart(7, '0');
+}
+
+
+// Navigation
+
+document.querySelector(".menu-controls").addEventListener("click", function() {
+	document.querySelector(".box-menu").style.display = "flex";
+	document.querySelector(".box-controls").style.display = "flex";
+});
+
+
+document.querySelector(".menu-size").addEventListener("click", function() {
+	document.querySelector(".box-menu").style.display = "flex";
+	document.querySelector(".box-size").style.display = "flex";
+});
+
+
+document.querySelector(".close-controls").addEventListener("click", function() {
+	closeNavMenus()
+});
+
+document.querySelector(".box-menu").addEventListener("click", function(event) {
+	if (event.target === document.querySelector(".box-menu")) {
+		closeNavMenus()
+    }
+});
+
+function closeNavMenus() {
+	document.querySelector(".box-menu").style.display = "none";
+	document.querySelector(".box-controls").style.display = "none";
+	document.querySelector(".box-size").style.display = "none";
 }

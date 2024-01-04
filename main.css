@@ -1,3 +1,7 @@
+body {
+	margin: 0;
+	overflow-x: hidden;
+}
 .main-game {
 	display: grid;
 
@@ -74,6 +78,7 @@
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+	margin-bottom: 25px;
 }
 
 table.highscore {
@@ -84,4 +89,53 @@ table.highscore {
 	display: flex;
 	flex-direction: column;
 	min-width: 150px;
+}
+
+.box-menu {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+}
+
+.box-size {
+	display: none;
+}
+
+.box-controls, .box-size {
+	min-width: 300px;
+	border: 1px solid #000;
+	background-color: #fff;
+	display: none;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	z-index: 2;
+}
+
+.box-controls table {
+	margin: 0px 10px;
+}
+
+.controls-top {
+	width: 100%;
+	display: flex;	
+	justify-content: space-between;
+	padding: 0 10px;
+	align-items: center;
+}
+
+.controls-top > * {
+	margin: 10px;
+}
+
+.close-controls {
+	width: 25px;
+	height: 25px;
+	background-color: red;
 }
