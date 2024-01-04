@@ -124,12 +124,12 @@ function updateJSONHighScores(newScore) {
 		if (newScore < storedData[hardness][9]) {
 			storedData[hardness].pop()
 			storedData[hardness].push(newScore)
-			storedData[hardness].sort()
+			storedData[hardness].sort((a, b) => a - b);
 		}
 	}
 	else {
 		storedData[hardness].push(newScore)
-		storedData[hardness].sort()
+		storedData[hardness].sort((a, b) => a - b);
 	}
 	
 	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
