@@ -111,6 +111,7 @@ setJSONHighScores()
 function updateJSONHighScores(newScore) {
 
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+	storedData[hardness].sort((a, b) => a - b);
 	console.log(storedData)
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
@@ -123,6 +124,7 @@ function updateJSONHighScores(newScore) {
 	if (storedData[hardness].length >= 10) {
 		if (newScore < storedData[hardness][9]) {
 			storedData[hardness].pop()
+			storedData[hardness].push(9)
 			storedData[hardness].push(newScore)
 			storedData[hardness].sort((a, b) => a - b);
 		}
