@@ -87,6 +87,15 @@ firstJSON()
 
 function setJSONHighScores() {
 	const storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+
+	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
+		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
+			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
+			alert("High scores were fixed, so old high scores got deleted")
+			storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+		}
+	}
+
 	if (storedData) {
 		for (const [key, value] of Object.entries(storedData)) {
 			currentRecords = document.querySelectorAll("."+key+"_high_self")
@@ -112,7 +121,7 @@ function updateJSONHighScores(newScore) {
 
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	storedData[hardness].sort((a, b) => a - b);
-	console.log(storedData)
+	console.log(storedData.expert, storedData.easy[0])
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
 			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
@@ -126,12 +135,16 @@ function updateJSONHighScores(newScore) {
 			storedData[hardness].pop()
 			storedData[hardness].push(9)
 			storedData[hardness].push(newScore)
-			storedData[hardness].sort((a, b) => a - b);
+			storedData[hardness].sortsort(function(a, b) {
+			  return a - b;
+			});
 		}
 	}
 	else {
 		storedData[hardness].push(newScore)
-		storedData[hardness].sort((a, b) => a - b);
+		storedData[hardness]sort(function(a, b) {
+			return a - b;
+		});
 	}
 	console.log(storedData)
 	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
