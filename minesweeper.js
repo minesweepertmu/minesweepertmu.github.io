@@ -111,10 +111,13 @@ setJSONHighScores()
 function updateJSONHighScores(newScore) {
 
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
-		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0)
-		localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
-		alert("High scores were fixed, so old high scores got deleted")
+		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
+			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
+			alert("High scores were fixed, so old high scores got deleted")
+			storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+		}
 	}
 
 	if (storedData[hardness].length >= 10) {
