@@ -394,7 +394,6 @@ function eventListenerForOpened() {
 
 
 document.querySelector(".game-status").addEventListener("click", function() {
-	console.log("start")
 	resetStopwatch()
     makeTheMineLawn(rowsG, colsG);
 });
