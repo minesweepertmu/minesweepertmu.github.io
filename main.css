@@ -4,7 +4,13 @@
 }
 .main-game2 {
 	display: grid;
+}
 
+.playground {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 .game-row {
 	display: flex;
@@ -36,19 +42,32 @@
 }
 
 .time-stopwatch {
-	display: inline;
-	width: 100px;
-	height: 100px;
+	display: flex;
+	margin: 7px 0;
+}
+
+.box-settings-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 25px 0;
+}
+.highscore-text-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .game-status {
-	display: flex;
-	min-height: 25px;
-	min-width: 25px;
 	display: inline-block;
     overflow: hidden;
     white-space: nowrap;
-	background-color: red;
+    padding: 5px 15px;
+	background-color: #cc7c84;
+}
+
+.game-status:hover {
+	cursor: pointer;
 }
 
 .highscore-table {

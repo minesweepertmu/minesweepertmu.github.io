@@ -15,7 +15,7 @@ function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
 	gameStatus.id = "start"
 	document.querySelector(".main-game").innerHTML = ''
 	document.querySelector(".main-game2").innerHTML = ''
-	document.querySelector(".game-status").innerHTML = ''
+	document.querySelector(".game-status").innerHTML = 'Restart'
 	document.querySelector(".mines-count").textContent = currentFlags
 
 
