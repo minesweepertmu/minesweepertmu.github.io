@@ -137,7 +137,7 @@ function updateJSONHighScores(newScore) {
 			storedData[hardness].pop()
 			storedData[hardness].push(9)
 			storedData[hardness].push(newScore)
-			storedData[hardness].sortsort(function(a, b) {
+			storedData[hardness].sort(function(a, b) {
 			  return a - b;
 			});
 		}
