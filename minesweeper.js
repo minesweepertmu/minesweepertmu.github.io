@@ -87,7 +87,8 @@ firstJSON()
 
 function setJSONHighScores() {
 	const storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
-
+	storedData.easy.sort((a, b) => a - b);
+	console.log(storedData.expert, storedData.easy[0])
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
 			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
@@ -114,13 +115,14 @@ function setJSONHighScores() {
 			}
 		}
 	}
+	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
 }
 setJSONHighScores()
 
 function updateJSONHighScores(newScore) {
 
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
-	storedData[hardness].sort((a, b) => a - b);
+	storedData.easy.sort((a, b) => a - b);
 	console.log(storedData.expert, storedData.easy[0])
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
