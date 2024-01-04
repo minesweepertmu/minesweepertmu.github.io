@@ -88,7 +88,7 @@ firstJSON()
 function setJSONHighScores() {
 	const storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	storedData.easy.sort((a, b) => a - b);
-	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy < 999) {
+	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy[0] < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
 			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
 			alert("High scores were fixed, so old high scores got deleted")
