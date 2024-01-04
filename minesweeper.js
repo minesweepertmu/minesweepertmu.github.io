@@ -131,7 +131,7 @@ function updateJSONHighScores(newScore) {
 		storedData[hardness].push(newScore)
 		storedData[hardness].sort((a, b) => a - b);
 	}
-	
+	console.log(storedData)
 	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
 	setJSONHighScores()
 	return 0;
