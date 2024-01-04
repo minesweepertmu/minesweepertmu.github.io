@@ -86,7 +86,7 @@ function firstJSON() {
 firstJSON()
 
 function setJSONHighScores() {
-	const storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	storedData.easy.sort((a, b) => a - b);
 	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy[0] < 999) {
 		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
@@ -394,6 +394,7 @@ function eventListenerForOpened() {
 
 
 document.querySelector(".game-status").addEventListener("click", function() {
+	console.log("start")
 	resetStopwatch()
     makeTheMineLawn(rowsG, colsG);
 });
