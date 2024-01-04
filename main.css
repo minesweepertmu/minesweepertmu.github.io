@@ -1,0 +1,68 @@
+.main-game {
+	display: grid;
+
+}
+.main-game2 {
+	display: grid;
+
+}
+.game-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: space-around;
+}
+.single-element {
+	border: 1px solid;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0;
+}
+
+.single-element button {
+	width: 100%;
+	height: 100%;
+}
+
+
+.mines-container {
+	display: flex;
+}
+
+.mines-container p { 
+
+}
+
+.time-stopwatch {
+	display: inline;
+	width: 100px;
+	height: 100px;
+}
+
+.game-status {
+	display: flex;
+	min-height: 25px;
+	min-width: 25px;
+	display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+	background-color: red;
+}
+
+.highscore-table {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+table.highscore {
+
+}
+
+.highscore-table-container {
+	display: flex;
+	flex-direction: column;
+	min-width: 150px;
+}
