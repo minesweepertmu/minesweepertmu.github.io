@@ -19,6 +19,11 @@ body {
 	font-family: 'teko', 'minesweeper';
 }
 
+a {
+	color: #001EC1;
+	text-decoration: none;
+}
+
 p {
   font-family: inherit;
   font-size: inherit;
@@ -76,6 +81,7 @@ p {
 .time-stopwatch, .mines-container {
 	width: 70px; /* Fixed width for the stopwatch */
 	border: 3px inset;
+	user-select: none;
 }
 
 .game-info-decorative > * {
@@ -335,4 +341,12 @@ table.highscore {
 	align-items: center;
 	font-size: 30px;
 	margin: 10px 0;
+}
+
+
+@media screen and (max-width: 500px) {
+	.highscore-table {
+		flex-direction: column;
+	}
+
 }
