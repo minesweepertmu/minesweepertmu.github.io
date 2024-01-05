@@ -9,6 +9,8 @@ let stopwatchInterval;
 let startTimeInMs;
 let endTimeInMs;
 
+let namesOfNumbers = ["st", "nd", "rd"]
+
 const numberColorsHex = {
   1: "#001EC1",
   2: "#018100",
@@ -21,7 +23,7 @@ const numberColorsHex = {
   0: "#FFFFFF",
 };
 
-function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
+function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[], lotMines = false) {
 	seconds = 0
 	currentFlags = mines
 	game = []
@@ -47,8 +49,10 @@ function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
 				if (x == -1 && y == -1){
 					game[randomRow][randomCols] = -1
 				}
-				
-				else if ((randomRow >= x-1 && randomRow <= parseInt(x)+1) && (randomCols >= y-1 && randomCols <= parseInt(y)+1)){
+				else if (lotMines && randomRow == x && randomCols == y) {
+					randomRowAndColGen()
+				}
+				else if ((randomRow >= x-1 && randomRow <= parseInt(x)+1) && (randomCols >= y-1 && randomCols <= parseInt(y)+1) && !(lotMines)){
 					randomRowAndColGen()
 				}
 				else {
@@ -142,18 +146,30 @@ function updateJSONHighScores(newScore) {
 
 	if (storedData[hardness].length >= 10) {
 		if (newScore < storedData[hardness][9]) {
+			document.querySelector(".new-hs-container").style.display = "flex"
 			storedData[hardness].pop()
 			storedData[hardness].push(newScore)
 			storedData[hardness].sort(function(a, b) {
 			  return a - b;
 			});
+			let secondsHS = Math.floor(newScore / 1000)
+			let millisecondsHS = newScore % 1000
+			let place = parseInt(storedData[hardness].indexOf(newScore))+1
+			const numberName = (place == 1 || place == 2 || place == 3) ? namesOfNumbers[place-1] : 'th';
+			document.querySelector(".new-hs").innerHTML = "Wow! " + seconds + "." + millisecondsHS + "s is your new high score in the " + place + numberName +" place."
 		}
 	}
 	else {
+		document.querySelector(".new-hs-container").style.display = "flex"
 		storedData[hardness].push(newScore)
 		storedData[hardness].sort(function(a, b) {
 			return a - b;
 		});
+		let secondsHS = Math.floor(newScore / 1000)
+		let millisecondsHS = newScore % 1000
+		let place = parseInt(storedData[hardness].indexOf(newScore))+1
+		const numberName = (place == 1 || place == 2 || place == 3) ? namesOfNumbers[place-1] : 'th';
+		document.querySelector(".new-hs").innerHTML = "Wow! " + seconds + "." + millisecondsHS + "s is your new high score in the " + place + numberName +" place."
 	}
 	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
 	setJSONHighScores()
@@ -232,9 +248,24 @@ function handleButtonClick(event) {
 
 
 function onFirstClick(event) {
+	document.querySelector(".new-hs-container").style.display = "none"
+
 	idArray = event.target.id.split("/")
 	if (event.target.classList.contains("flagged")) {
 		return 0
+	}
+	else if (rowsG*colsG <= mines + 8) {
+		if (game[idArray[0]][idArray[1]] !== -1) {
+			startStopwatch()
+			inGameButtonClick(event.target)
+		}
+		else {
+			makeTheMineLawn(rowsG, colsG, idArray[0],idArray[1], event, document.querySelectorAll(".flagged"), true)
+			let seconds = 0;
+			let stopwatchInterval;
+
+			startStopwatch()
+		}
 	}
 	else if (game[idArray[0]][idArray[1]] !== 0) {
 		makeTheMineLawn(rowsG, colsG, idArray[0],idArray[1], event, document.querySelectorAll(".flagged"))
@@ -399,9 +430,15 @@ function eventListenerForButtons() {
 	    	ev.preventDefault();
 		    if (ev.target.classList.contains("flagged") || ev.target.parentNode.classList.contains("flagged")) {
 		    	currentFlags++;
-		    	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-				ev.target.parentNode.classList.remove("flagged")
-				ev.target.remove()
+			    document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+		    	if (ev.target.tagName === "IMG") {
+					ev.target.parentNode.classList.remove("flagged")
+					ev.target.remove()
+					return 0;
+		    	}
+		    	ev.target.classList.remove("flagged");
+		    	ev.target.innerHTML = ""
+				
 		    	//ev.target.innerHTML = " ";
 		    }
 		    else {
@@ -525,9 +562,34 @@ document.querySelector(".new-box-button").addEventListener("click", function() {
 	for (const element of boxRadios) {
 		if (element.checked){
 			if (element.value === "custom") {
+				hardness = "custom"
 				rowsG = document.getElementById("custom_rows").value
 				colsG = document.getElementById("custom_cols").value
 				mines = document.getElementById("custom_mines").value
+
+				if (rowsG < 5) {
+					rowsG = 5
+					document.getElementById("custom_rows").value = "5"
+				}
+				if (colsG < 8) {
+					colsG = 8
+					document.getElementById("custom_cols").value = "8"
+				}
+				if (rowsG > 99) {
+					rowsG = 99
+					document.getElementById("custom_rows").value = "99"
+				}
+				if (colsG > 99) {
+					colsG = 99
+					document.getElementById("custom_cols").value = "99"
+				}
+
+				if (colsG*rowsG/20 > mines) {
+					alert("This might take some time :)")
+				}
+				if (colsG*rowsG == mines) {
+					mines--;
+				}
 				makeTheMineLawn(rowsG,colsG)
 			}
 			else if (element.value === "small") {
@@ -557,9 +619,13 @@ document.querySelector(".new-box-button").addEventListener("click", function() {
 
 
 function updateStopwatch() {
-    seconds++;
-    const formattedSeconds = seconds < 1000 ? padWithZeros(seconds) : seconds;
-    document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds}`;
+	if (!endTimeInMs) {
+	    seconds++;
+	    const formattedSeconds = seconds < 1000 ? padWithZeros(seconds) : seconds;
+	    document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds}`;
+	    return 0
+	}
+	stopStopwatch()
 }
 
 function updateStopwatchWithMs(ms) {
@@ -585,7 +651,11 @@ function resetStopwatch() {
 }
 
 function padWithZeros(number) {
-    return String(number).padStart(3, '0');
+    const isNegative = number < 0;
+    const absoluteNumber = Math.abs(number);
+    const paddedNumber = String(absoluteNumber).padStart(3, '0');
+    
+    return isNegative ? `-${paddedNumber}` : paddedNumber;
 }
 
 function padWithZerosMs(number) {

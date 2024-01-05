@@ -27,13 +27,26 @@ p {
 
 .main-game {
 	display: grid;
-
 }
+
+.input-box-size {
+	border-radius: none;
+	font-family: 'teko';
+	width: 30px;
+	height: 25px;
+	font-size: 25px;
+}
+
 .main-game-container {
 	background-color: #CDCFD0;
 	border: 3.5px outset;
 	padding: 10px;
 	border-top: none;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 .main-game2 {
 	display: grid;
@@ -61,11 +74,11 @@ p {
 	flex: 1;
 }
 .time-stopwatch, .mines-container {
-  width: 70px; /* Fixed width for the stopwatch */
+	width: 70px; /* Fixed width for the stopwatch */
+	border: 3px inset;
 }
 
 .game-info-decorative > * {
-	padding: 0 5px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -77,6 +90,7 @@ p {
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	min-width: 258px;
 }
 
 .game-row {
@@ -139,21 +153,20 @@ p {
 .mines-container {
 	display: flex;
 	font-family: tech;
-	font-size: 50px;
+	font-size: 45px;
 }
 
 .time-stopwatch {
 	display: flex;
 	margin: 7px 0;
 	font-family: tech;
-	font-size: 50px;
+	font-size: 45px;
 }
 
 .box-settings-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 25px 0;
 }
 .highscore-text-container {
 	display: flex;
@@ -163,6 +176,8 @@ p {
 
 .highscore-text-container h2 {
 	font-size: 45px;
+	margin-block-end: 0;
+    margin-top: 50px;
 }
 
 
@@ -224,51 +239,100 @@ table.highscore {
 	height: 100%;
 	overflow: auto;
 	display: none;
-	justify-content: center;
-	align-items: center;
-	z-index: 1;
+	/*justify-content: center;
+	align-items: center;*/
+	z-index: 2;
 }
 
 .box-size {
 	display: none;
 }
 
+.box-size table {
+	border-spacing: 5px;
+	margin: 10px;
+}
+.box-size td {
+	padding: 0 15px;
+}
+
 .box-controls, .box-size {
 	min-width: 300px;
-	border: 1px solid #000;
+	
 	background-color: #fff;
 	display: none;
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
 	position: absolute;
-	z-index: 2;
+	left: 75px;
+	top: 25px;
+	z-index: 3;
 	font-size: 25px;
+	-webkit-box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.3);
+	box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.3);
 }
 
 .box-controls table {
-	margin: 0px 10px;
-	border-collapse: collapse
+	border-collapse: collapse;
+	border-spacing: 5px;
 }
-
+.controls-table {
+	margin: 0 20px;
+}
 
 .controls-top {
 	width: 100%;
 	display: flex;	
 	justify-content: space-between;
-	padding: 0 10px;
 	align-items: center;
+	background-color: #CDCFD0;
+}
+
+.controls-top p {
+	font-size: 35px;
 }
 
 .controls-top > * {
+	margin: 10px 20px;
+}
+
+.size-button-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.box-menu input[type="button"] {
+	border: 3.5px outset;
+	background-color: #CDCFD0;
+	font-family: 'teko';
+	font-size: 25px;
 	margin: 10px;
+	margin-bottom: 20px;
+	padding: 5px 15px;
+}
+
+.box-menu input[type="button"]:active {
+	background-position: right 3.5px bottom 3.5px;
+	border: 3.5px inset;
+	padding: 7px 13px 3px 17px;
 }
 
 .close-controls {
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 30px;
 	background-image: url("multimedia/icons/close.svg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
+}
+
+.new-hs-container {
+	display: none;
+	justify-content: center;
+	align-items: center;
+	font-size: 30px;
+	margin: 10px 0;
 }
