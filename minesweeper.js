@@ -9,16 +9,27 @@ let stopwatchInterval;
 let startTimeInMs;
 let endTimeInMs;
 
+const numberColorsHex = {
+  1: "#001EC1",
+  2: "#018100",
+  3: "#CF0000",
+  4: "#102E61",
+  5: "#620000",
+  6: "#239E9F",
+  7: "#0E1111",
+  8: "#434554",
+  0: "#FFFFFF",
+};
+
 function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
 	seconds = 0
 	currentFlags = mines
 	game = []
 	gameStatus = document.querySelector(".game-status")
 	gameStatus.id = "start"
-	document.querySelector(".main-game").innerHTML = ''
 	document.querySelector(".main-game2").innerHTML = ''
-	document.querySelector(".game-status").innerHTML = 'Restart'
-	document.querySelector(".mines-count").textContent = currentFlags
+	document.querySelector(".game-status").style.backgroundImage = "url('multimedia/images/default.png')"
+	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
 
 
 	for (i = 0; i < rows; i++){
@@ -67,7 +78,6 @@ function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[]) {
 			}
 		}
 	}
-	makeTheGameHTML()
 	makeTheGameHTML2(allFlags)
 	eventListenerForButtons()
 
@@ -150,7 +160,7 @@ function updateJSONHighScores(newScore) {
 	return 0;
 }
 
-function makeTheGameHTML(){
+/* function makeTheGameHTML(){
 	mainGameHTML = document.querySelector(".main-game")
 	for (i = 0; i < rowsG; i++){
 
@@ -171,7 +181,7 @@ function makeTheGameHTML(){
 		}
 	}
 	
-}
+} */
 
 function makeTheGameHTML2(previousFlags = []){
 	mainGameHTML = document.querySelector(".main-game2")
@@ -185,7 +195,7 @@ function makeTheGameHTML2(previousFlags = []){
 			currentElement = document.createElement("div")
 			currentElement.className = "single-element"
 
-			currentCol = document.createElement("button")
+			currentCol = document.createElement("div")
 			currentCol.id = i.toString() + "/" + j.toString()
 			currentElement.id = i.toString() + ":" + j.toString()
 			currentCol.className = "game-button"
@@ -196,9 +206,8 @@ function makeTheGameHTML2(previousFlags = []){
 			previousFlags.forEach(element => {
 			    if (element.id === currentCol.id) {
 			        currentFlags--;
-			    	document.querySelector(".mines-count").textContent = currentFlags
-			    	currentCol.classList.add("flagged")
-			    	currentCol.innerHTML = "f";
+			    	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+			    	changeTheElement(currentCol, "flag")
 			    }
 			});
 
@@ -253,11 +262,17 @@ function changeTheElement(element, action) {
 		currentElement.remove()
 		parentOfElement.classList.add("opened-div")
 		let revealedText = game[idArray[0]][idArray[1]] === 0 ? " " : game[idArray[0]][idArray[1]];
+
+		if (revealedText == "-1") {
+			parentOfElement.style.backgroundImage = `url("multimedia/icons/mine_2.svg")`;
+			return 0
+		}
+		parentOfElement.style.color = numberColorsHex[parseInt(revealedText)]
 		parentOfElement.textContent = revealedText
 		eventListenerForOpened()
 
 		if (document.querySelectorAll(".game-button").length == mines) {
-	    	document.querySelector(".game-status").innerHTML = "You just won the game!"
+	    	document.querySelector(".game-status").style.backgroundImage = `url("multimedia/images/win.png")`;
     	}
 		return 0
 
@@ -268,15 +283,27 @@ function changeTheElement(element, action) {
 		element.remove()
 		parentOfElement.classList.add("opened-div")
 		let revealedText = game[idArray[0]][idArray[1]] === 0 ? " " : game[idArray[0]][idArray[1]];
+		if (revealedText == "-1") {
+			parentOfElement.style.backgroundImage= `url("multimedia/icons/mine_2.svg")`;
+			return 0
+		}
+
 		parentOfElement.textContent = revealedText
 	}
 	else if (action === "flag") {
-		if (!(element.classList.contains("flagged"))) {
-			currentFlags--;
-			document.querySelector(".mines-count").textContent = currentFlags
-			element.classList.add("flagged")
-			element.innerHTML = "f";
+		if (!(element.classList.contains("flagged") || element.parentNode.classList.contains("flagged"))) {
+		    currentFlags--;
+		    document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+		    flagSet = document.createElement("img")
+		    flagSet.src = "multimedia/icons/ms_flag.svg"
+		    flagSet.style.width = "100%"
+		    element.appendChild(flagSet)
+		    element.classList.add("flagged")
 		}
+	}
+	else if (action === "wrongFlag") {
+		element.innerHTML = ""
+		element.style.backgroundImage = `url("multimedia/icons/mine_fail.svg")`
 	}
 	else if (action === "close") {
 		element.classList.add("closed")
@@ -285,9 +312,20 @@ function changeTheElement(element, action) {
 
 function openTilesAfterLose() {
 	allClosedTiles = document.querySelectorAll(".game-button");
+	allFlaggedTiles = document.querySelectorAll(".flagged");
+
+	allFlaggedTiles.forEach((el)=>{
+		idArray = el.id.split("/");
+		if (game[idArray[0]][idArray[1]] !== -1) {
+			parentOfElement = el.parentNode
+			changeTheElement(el, "openFlag")
+			changeTheElement(parentOfElement, "wrongFlag")
+		}
+	});
+
 	allClosedTiles.forEach((el)=>{
 		idArray = el.id.split("/");
-		if (game[idArray[0]][idArray[1]] == -1) {
+		if (game[idArray[0]][idArray[1]] == -1  && !(el.classList.contains("flagged"))) {
 			changeTheElement(el, "openFlag")
 		}
 		else {
@@ -305,7 +343,7 @@ function inGameButtonClick(eventTarget) {
     	stopStopwatch()
     	gameStatus = document.querySelector(".game-status")
 		gameStatus.id = "lose"
-		gameStatus.textContent = "You jost lost to the mine :("
+		gameStatus.style.backgroundImage = `url("multimedia/images/lose.png")`;
 		openTilesAfterLose()
         //makeTheMineLawn(rowsG, colsG, idArray[0], idArray[1]);
     } else {
@@ -335,11 +373,10 @@ function inGameButtonClick(eventTarget) {
     }
     if (document.querySelectorAll(".game-button").length == mines) {
     	// When winning the game
-    	document.querySelector(".game-status").innerHTML = "You just won the game!"
     	stopStopwatch()
-    	document.querySelector(".mines-count").textContent = 0
+    	document.querySelector(".mines-container").textContent = "000"
     	document.querySelectorAll(".game-button").forEach(button => {
-		    button.textContent = "f";
+		    changeTheElement(button, "flag")
 		});
 		endTimeInMs = new Date().getTime();
 		intervalInMs = endTimeInMs - startTimeInMs;
@@ -360,17 +397,22 @@ function eventListenerForButtons() {
 	buttons.forEach(button => {
 	  	button.addEventListener('contextmenu', function(ev) {
 	    	ev.preventDefault();
-		    if (ev.target.innerHTML==="f") {
+		    if (ev.target.classList.contains("flagged") || ev.target.parentNode.classList.contains("flagged")) {
 		    	currentFlags++;
-		    	document.querySelector(".mines-count").textContent = currentFlags
-				ev.target.classList.remove("flagged")
-		    	ev.target.innerHTML = " ";
+		    	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+				ev.target.parentNode.classList.remove("flagged")
+				ev.target.remove()
+		    	//ev.target.innerHTML = " ";
 		    }
 		    else {
 		    	currentFlags--;
-		    	document.querySelector(".mines-count").textContent = currentFlags
+		    	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+		    	flagSet = document.createElement("img")
+		    	flagSet.src = "multimedia/icons/ms_flag.svg"
+		    	flagSet.style.width = "100%"
+		    	ev.target.appendChild(flagSet)
 		    	ev.target.classList.add("flagged")
-		    	ev.target.innerHTML = "f";
+		    	//ev.target.innerHTML = "f";
 		    }
 
 	    	return 0;
@@ -517,12 +559,12 @@ document.querySelector(".new-box-button").addEventListener("click", function() {
 function updateStopwatch() {
     seconds++;
     const formattedSeconds = seconds < 1000 ? padWithZeros(seconds) : seconds;
-    document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds} seconds`;
+    document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds}`;
 }
 
 function updateStopwatchWithMs(ms) {
 	const formattedSeconds = seconds < 1000 ? padWithZeros(seconds) : seconds;
-	document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds} seconds ${ms} ms`;
+	document.querySelector('.time-stopwatch').innerHTML = `${formattedSeconds}`;
 }
 
 function startStopwatch() {
@@ -538,7 +580,7 @@ function resetStopwatch() {
     seconds = 0;
     startTimeInMs = 0;
     endTimeInMs = 0;
-    document.querySelector('.time-stopwatch').innerHTML = '000 seconds';
+    document.querySelector('.time-stopwatch').innerHTML = '000';
     stopStopwatch();
 }
 
@@ -550,23 +592,35 @@ function padWithZerosMs(number) {
     return String(number).padStart(7, '0');
 }
 
+document.querySelector(".main-game2").addEventListener("mousedown", () => {
+	document.querySelector(".game-status").style.backgroundImage = `url("multimedia/images/onclick.png")`;
+})
+
+document.querySelector(".main-game2").addEventListener("mouseup", () => {
+	document.querySelector(".game-status").style.backgroundImage = `url("multimedia/images/default.png")`;
+})
+
 
 // Navigation
 
 document.querySelector(".menu-controls").addEventListener("click", function() {
+	closeNavMenus()
 	document.querySelector(".box-menu").style.display = "flex";
 	document.querySelector(".box-controls").style.display = "flex";
 });
 
 
 document.querySelector(".menu-size").addEventListener("click", function() {
+	closeNavMenus()
 	document.querySelector(".box-menu").style.display = "flex";
 	document.querySelector(".box-size").style.display = "flex";
 });
 
 
-document.querySelector(".close-controls").addEventListener("click", function() {
-	closeNavMenus()
+document.querySelectorAll(".close-controls").forEach(function(element) {
+	element.addEventListener("click", function() {
+		closeNavMenus()
+	});
 });
 
 document.querySelector(".box-menu").addEventListener("click", function(event) {

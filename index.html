@@ -9,9 +9,11 @@
 </head>
  
 <body>
-	<a href="javascript:void(0);" class="menu-size">Board size</a>
-	|
-	<a href="javascript:void(0);" class="menu-controls">Controls</a>
+	<div class="menu-main">
+		<a href="javascript:void(0);" class="menu-size">Board size</a>
+		|
+		<a href="javascript:void(0);" class="menu-controls">Controls</a>
+	</div>
 	<div class="box-menu">
 		<div class="box-controls">
 			<div class="controls-top">
@@ -112,28 +114,23 @@
 		</div>
 	</div>
 	<div class="playground">
-		<div class="main-game" style="display: none;">
-		
-		</div>
-		<br />
-		<div class="game-status" id="start">
-			<p class="game-status-text">
-				Restart
-			</p>
-		</div>
-		<div class="time-stopwatch">
-			000 seconds
-		</div>
-		<div class="main-game2">
-			
-		</div>
-		<div class="mines-container">
-			<p>
-				Total mines: 
-			</p>
-			<p class="mines-count">
+		<div class="game-container">
+			<div class="game-info-container">
+				<div class="game-info-decorative">
+					<div class="mines-container">
+					</div>
+					<div class="game-status" id="start">
+					</div>
+					<div class="time-stopwatch">
+						000
+					</div>
+				</div>
+			</div>
+			<div class="main-game-container">
+				<div class="main-game2">
 				
-			</p>
+				</div>
+			</div>
 		</div>
 	</div>
 	
