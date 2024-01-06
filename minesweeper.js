@@ -23,6 +23,107 @@ const numberColorsHex = {
   0: "#FFFFFF",
 };
 
+const darkNumberColorsHex = {
+	1: "#3478DE",
+	2: "#49C049",
+	3: "#D93939",
+	4: "#1159C4",
+	5: "#B80606",
+	6: "#1FADAD",
+	7: "#787C97",
+	8: "#B1B8BB",
+	0: "#FFFFFF",
+};
+
+currentPallete = numberColorsHex
+
+const lightModeColors = {
+	"--text-color-main": "#0e1111",
+	"--link-color": "#001EC1",
+	"--background-color":"#FFFFFB",
+	"--primary-color": "#CDCFD0",
+	"--border-color": "#7B7B7B",
+	"--secondary-color": "#CDCFD0",
+	"--shadow-color": "rgba(0,0,0,0.3)",
+	"--border-color-primary": "#EEEEEE",
+};
+
+const darkModeColors = {
+  	"--text-color-main": "#FFFFFB",
+  	"--link-color": "#58a6ff",
+  	"--background-color": "#0e1111",
+  	"--primary-color": "#33383A",
+  	"--border-color": "#222",
+  	"--secondary-color": "#FFFFFB",
+  	"--border-color-primary": "#555",
+  	"--shadow-color": "rgba(255,255,255,0.3)",
+};
+
+function onLoadUIMode() {
+	uiMode = JSON.parse(localStorage.getItem('ui_mode'));
+	modeContainer = document.querySelector(".mode-container")
+
+	if (uiMode === "light") {
+		modeContainer.classList.remove("dark")
+		modeContainer.classList.add("light")
+		modeContainer.style.backgroundImage = "url('multimedia/icons/moon.svg')"
+		currentPallete = numberColorsHex
+		applyColorPalette(lightModeColors);
+		applyColorPaletteForNumbers(lightModeColors);
+
+	}
+	else if (uiMode === "dark") {
+		modeContainer.classList.remove("light")
+		modeContainer.classList.add("dark")
+		modeContainer.style.backgroundImage = "url('multimedia/icons/sun.svg')"
+		currentPallete = darkNumberColorsHex
+		applyColorPalette(darkModeColors);
+		applyColorPaletteForNumbers(darkModeColors);
+	}
+}
+
+onLoadUIMode();
+
+document.querySelector(".mode-container").addEventListener("click", (ev) => {
+	if (ev.target.classList.contains("light")) {
+		ev.target.classList.remove("light")
+		ev.target.classList.add("dark")
+		ev.target.style.backgroundImage = "url('multimedia/icons/sun.svg')"
+		currentPallete = darkNumberColorsHex
+		applyColorPalette(darkModeColors);
+		applyColorPaletteForNumbers(darkModeColors);
+		localStorage.setItem('ui_mode', JSON.stringify("dark"));
+	}
+	else {
+		ev.target.classList.remove("dark")
+		ev.target.classList.add("light")
+		ev.target.style.backgroundImage = "url('multimedia/icons/moon.svg')"
+		currentPallete = numberColorsHex
+		applyColorPalette(lightModeColors);
+		applyColorPaletteForNumbers(lightModeColors);
+		localStorage.setItem('ui_mode', JSON.stringify("light"));
+	}
+})
+
+function applyColorPaletteForNumbers (colorPalette) {
+	openedDivs = document.querySelectorAll(".opened-div");
+
+	openedDivs.forEach((el) => {
+		let id = el.id.split(":")
+		el.style.color = currentPallete[el.innerHTML]
+	});
+}
+
+function applyColorPalette(colorPalette) {
+  	const root = document.documentElement.style;
+
+  	for (const [key, value] of Object.entries(colorPalette)) {
+    	root.setProperty(key, value);
+ 	}
+}
+
+//SWITCH TO DARK MODE AUTO
+
 function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[], lotMines = false) {
 	seconds = 0
 	currentFlags = mines
@@ -342,7 +443,7 @@ function changeTheElement(element, action) {
 			parentOfElement.style.backgroundImage = `url("multimedia/icons/mine_2.svg")`;
 			return 0
 		}
-		parentOfElement.style.color = numberColorsHex[parseInt(revealedText)]
+		parentOfElement.style.color = currentPallete[parseInt(revealedText)]
 		parentOfElement.textContent = revealedText
 		eventListenerForOpened()
 
