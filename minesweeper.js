@@ -33,7 +33,6 @@ function makeTheMineLawn(rows, cols, x=-1, y=-1, ev=0, allFlags=[], lotMines = f
 	document.querySelector(".game-status").style.backgroundImage = "url('multimedia/images/default.png')"
 	document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
 
-
 	for (i = 0; i < rows; i++){
 		game.push([])
 		for (j = 0; j < cols; j++){
@@ -229,6 +228,39 @@ function makeTheGameHTML2(previousFlags = []){
 
 		}
 	}
+		let length = parseInt(getComputedStyle(document.querySelector(".game-row")).width,10)
+		if (colsG * 25 >= length && colsG * 25 > window.innerWidth) {
+			document.querySelector("body").style.overflowX = "scroll";
+			document.querySelector("body").style.overflowX = "flex";
+			document.querySelector(".playground").style.display = "block"
+			document.querySelector(".game-container").style.display = "block"
+			document.querySelector("body").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".playground").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".game-container").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".game-info-container").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".main-game-container").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".box-menu").style.width = (colsG * 25 + 50) + "px"
+			document.querySelector(".box-controls").style.width = "400px"
+			document.querySelector(".box-size").style.width = "400px"
+			var bodyWidth = document.body.scrollWidth;
+        	var halfViewportWidth = window.innerWidth / 2;
+        	var centerStartX = bodyWidth / 2 - halfViewportWidth;
+			window.scrollTo(centerStartX,0);
+		}
+		else {
+			document.querySelector("body").style.overflowX = "hidden";
+			document.querySelector("body").style.overflowX = "block";
+			document.querySelector(".playground").style.display = "flex"
+			document.querySelector(".game-container").style.display = "flex"
+			document.querySelector(".game-info-container").style.width = "100%"
+			document.querySelector(".main-game-container").style.width = "100%"
+			document.querySelector(".box-menu").style.width = "100%"
+			document.querySelector(".box-controls").style.width = "90%"
+			document.querySelector(".box-size").style.width = "90%"
+			document.querySelector("body").style.width = ""
+			document.querySelector(".playground").style.width = ""
+			document.querySelector(".game-container").style.width = ""
+		}
 	
 }
 
@@ -254,7 +286,8 @@ function onFirstClick(event) {
 	if (event.target.classList.contains("flagged")) {
 		return 0
 	}
-	else if (rowsG*colsG <= mines + 8) {
+
+	else if (rowsG*colsG <= parseInt(mines) + 8) {
 		if (game[idArray[0]][idArray[1]] !== -1) {
 			startStopwatch()
 			inGameButtonClick(event.target)
@@ -268,7 +301,7 @@ function onFirstClick(event) {
 		}
 	}
 	else if (game[idArray[0]][idArray[1]] !== 0) {
-		makeTheMineLawn(rowsG, colsG, idArray[0],idArray[1], event, document.querySelectorAll(".flagged"))
+		makeTheMineLawn(rowsG, colsG, idArray[0],idArray[1], event, document.querySelectorAll(".flagged"), false)
 		let seconds = 0;
 		let stopwatchInterval;
 
@@ -584,7 +617,7 @@ document.querySelector(".new-box-button").addEventListener("click", function() {
 					document.getElementById("custom_cols").value = "99"
 				}
 
-				if (colsG*rowsG/20 > mines) {
+				if (colsG*rowsG/20 > mines && rowsG>49) {
 					alert("This might take some time :)")
 				}
 				if (colsG*rowsG == mines) {
