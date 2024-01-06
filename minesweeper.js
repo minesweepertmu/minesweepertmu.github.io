@@ -11,6 +11,10 @@ let endTimeInMs;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
+let settings = {
+	"long-tap": 250,
+}
+
 const numberColorsHex = {
   1: "#001EC1",
   2: "#018100",
@@ -26,10 +30,10 @@ const numberColorsHex = {
 const darkNumberColorsHex = {
 	1: "#3478DE",
 	2: "#49C049",
-	3: "#D93939",
-	4: "#1159C4",
+	3: "#C93030",
+	4: "#165EC9",
 	5: "#B80606",
-	6: "#1FADAD",
+	6: "#1AA8A8",
 	7: "#787C97",
 	8: "#B1B8BB",
 	0: "#FFFFFF",
@@ -58,6 +62,19 @@ const darkModeColors = {
   	"--border-color-primary": "#555",
   	"--shadow-color": "rgba(255,255,255,0.3)",
 };
+
+function applySettings() {
+	let settingsTemp = JSON.parse(localStorage.getItem('settings'));
+	if (!settingsTemp) {
+		localStorage.setItem('settings', JSON.stringify(settings));
+		return 0;
+	}
+	settings = settingsTemp
+	document.querySelector(".long-tap-option").value = settings["long-tap"]
+	document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${settings["long-tap"]}`;
+}
+
+applySettings()
 
 function onLoadUIMode() {
 	uiMode = JSON.parse(localStorage.getItem('ui_mode'));
@@ -301,14 +318,15 @@ function updateJSONHighScores(newScore) {
 
 function makeTheGameHTML2(previousFlags = [], fixAfterSet=false){
 	mainGameHTML = document.querySelector(".main-game2")
-	if (fixAfterSet) {mainGameHTML.innerHTML=""}
-	for (i = 0; i < rowsG; i++){
+	if (fixAfterSet) {
+		mainGameHTML.innerHTML=""
+	}
+
+	for (let i = 0; i < rowsG; i++){
 
 		newRow = document.createElement("div")
 		newRow.className = "game-row"
-		mainGameHTML.appendChild(newRow)
-
-		for (j = 0; j < colsG; j++){
+		for (let j = 0; j < colsG; j++){
 			currentElement = document.createElement("div")
 			currentElement.className = "single-element"
 
@@ -329,6 +347,7 @@ function makeTheGameHTML2(previousFlags = [], fixAfterSet=false){
 			});
 
 		}
+		mainGameHTML.appendChild(newRow)
 	}
 		let length = parseInt(getComputedStyle(document.querySelector(".game-row")).width,10)
 		if ((colsG * 25 >= length && colsG * 25 + 26.4 > document.body.clientWidth) || (fixAfterSet)) {
@@ -344,10 +363,18 @@ function makeTheGameHTML2(previousFlags = [], fixAfterSet=false){
 			document.querySelector(".box-menu").style.width = (colsG * 25 + 50) + "px"
 			document.querySelector(".box-controls").style.width = "400px"
 			document.querySelector(".box-size").style.width = "400px"
-			var bodyWidth = document.body.scrollWidth;
-        	var halfViewportWidth = window.innerWidth / 2;
-        	var centerStartX = bodyWidth / 2 - halfViewportWidth;
-			window.scrollTo(centerStartX,0);
+			let bodyWidth = document.body.scrollWidth;
+        	let halfViewportWidth = window.innerWidth / 2;
+        	let centerStartX = bodyWidth / 2 - halfViewportWidth;
+
+        	onMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        	if (onMobile) {
+        		centerStartX = Math.max(0, (window.innerWidth - document.documentElement.clientWidth) / 2);
+        		document.querySelector(".playground").scrollIntoView({block: "center"});
+        		window.scrollTo(centerStartX, 0);
+		        return 0
+        	}
+		    window.scrollTo(centerStartX, 0);
 		}
 		else {
 			document.querySelector("body").style.overflowX = "hidden";
@@ -609,10 +636,17 @@ function eventListenerForOpened() {
 		el.removeEventListener("click", openSurroundingElements);
 	  	el.addEventListener("click", openSurroundingElements)
 	});
-
+	onMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 	opened.forEach(el => {
+		if (onMobile) {
+	        el.addEventListener('touchstart', startTimer, { passive: true });
+	        el.addEventListener('touchmove', clearTimer, { passive: true });
+	        el.addEventListener('touchend', clearTimer);
+			return 0;
+		}
 		el.removeEventListener("contextmenu", flagSurroundingElements);
 	  	el.addEventListener("contextmenu", flagSurroundingElements)
+
 	});
 }
 
@@ -666,8 +700,27 @@ function openSurroundingElements(ev) {
     }
 }
 
-function flagSurroundingElements(event) {
-	event.preventDefault()
+
+let touchTimer;
+
+function startTimer(event) {
+    touchTimer = setTimeout(function() {
+        flagSurroundingElements(event, false)
+    }, settings["long-tap"]); // Adjust the duration as needed (e.g., 1000 milliseconds for a 1-second long tap)
+}
+
+function clearTimer() {
+    clearTimeout(touchTimer);
+}
+
+// Add touch event listeners
+
+
+function flagSurroundingElements(event, onDesktop=true) {
+	if (onDesktop) {
+		event.preventDefault()
+	}
+	
 	let flags = [];
     const idArray = event.target.id.split(":");
     const x = parseInt(idArray[0]);
@@ -831,6 +884,12 @@ document.querySelector(".menu-size").addEventListener("click", function() {
 	document.querySelector(".box-size").style.display = "flex";
 });
 
+document.querySelector(".menu-options").addEventListener("click", function() {
+	closeNavMenus()
+	document.querySelector(".box-menu").style.display = "flex";
+	document.querySelector(".box-options").style.display = "flex";
+});
+
 
 document.querySelectorAll(".close-controls").forEach(function(element) {
 	element.addEventListener("click", function() {
@@ -848,4 +907,12 @@ function closeNavMenus() {
 	document.querySelector(".box-menu").style.display = "none";
 	document.querySelector(".box-controls").style.display = "none";
 	document.querySelector(".box-size").style.display = "none";
+	document.querySelector(".box-options").style.display = "none";
 }
+
+document.querySelector('.long-tap-option').addEventListener('input', function () {
+    const currentValue = this.value;
+    settings["long-tap"] = currentValue;
+    localStorage.setItem("settings", JSON.stringify(settings))
+    document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${currentValue}`;
+});

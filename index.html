@@ -18,6 +18,8 @@
 		<a href="javascript:void(0);" class="menu-size">Board size</a>
 		|
 		<a href="javascript:void(0);" class="menu-controls">Controls</a>
+		|
+		<a href="javascript:void(0);" class="menu-options">Options</a>
 	</div>
 	<div class="box-menu">
 		<div class="box-controls">
@@ -107,9 +109,9 @@
 									<input type="radio" id="radio__custom" name="box_size" value="custom">
 									<label for="radio__custom">Custom</label>
 								</td>
-								<td><input type="text" id="custom_rows" class="input-box-size" value="20"></td>
-								<td><input type="text" id="custom_cols" class="input-box-size" value="30"></td>
-								<td><input type="text" id="custom_mines" class="input-box-size" value="145"></td>
+								<td><input type="number" id="custom_rows" class="input-box-size" value="20"></td>
+								<td><input type="number" id="custom_cols" class="input-box-size" value="30"></td>
+								<td><input type="number" id="custom_mines" class="input-box-size" value="145"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -117,6 +119,23 @@
 						<input type="button" value="New game" class="new-box-button">
 					</div>
 				</form>
+			</div>
+		</div>
+		<div class="box-options">
+			<div class="controls-top">
+				<p>
+					Options:
+				</p>
+				<div class="close-controls">
+					
+				</div>
+			</div>
+			<div class="options-container">
+				<p class="options-title">Long tap duration</p>
+				<label class= "options-label" for="long-tap-option">Long tap duration on mobile, in milliseconds. Default value is 250ms</label>
+				<input type="range" id="long-tap-option" class="long-tap-option" min="150" max="500" step="10" value="250" />
+
+    			<p class="long-tap-option-setting current-value">Current Value: 250</p>
 			</div>
 		</div>
 	</div>

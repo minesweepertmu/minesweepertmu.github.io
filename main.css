@@ -70,7 +70,7 @@ p {
 .input-box-size {
 	border-radius: none;
 	font-family: 'teko';
-	width: 30px;
+	width: 40px;
 	height: 25px;
 	font-size: 25px;
 	border: 3px inset;
@@ -118,6 +118,8 @@ p {
 	width: 70px; /* Fixed width for the stopwatch */
 	border: 3px inset;
 	user-select: none;
+	justify-content: center;
+    align-items: center;
 }
 
 .game-info-decorative > * {
@@ -292,7 +294,7 @@ table.highscore {
 	padding: 0 15px;
 }
 
-.box-controls, .box-size {
+.box-controls, .box-size, .box-options {
 	min-width: 300px;
 	
 	background-color: var(--background-color);
@@ -307,6 +309,17 @@ table.highscore {
 	-webkit-box-shadow: 0px 0px 25px 0px var(--shadow-color);
 	-moz-box-shadow: 0px 0px 25px 0px var(--shadow-color);
 	box-shadow: 0px 0px 25px 0px var(--shadow-color);
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+/* Remove the increment and decrement arrows in Chrome and Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .box-controls table {
@@ -373,6 +386,75 @@ table.highscore {
 	margin: 10px 0;
 }
 
+.options-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+}
+
+.long-tap-option {
+	border-radius: 0;
+	-webkit-appearance: none;
+    appearance: none;
+    width: 90%;
+}
+
+.options-title {
+	margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-top: 15px;
+}
+
+.options-label {
+	width: 250px;
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+.current-value {
+	margin-block-start: 10px;
+    margin-block-end: 10px;
+    font-size: 18px;
+}
+
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--text-color-main);
+  height: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+   -webkit-appearance: none; /* Override default look */
+   appearance: none;
+   margin-top: -8px; /* Centers thumb on the track */
+   background-color: red;
+   height: 20px;
+   width: 20px;    
+   border-radius: 50%;
+   box-sizing: border-box;
+   border: 3px solid;
+   background: var(--text-color-main);
+}
+
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"]::-moz-range-thumb,
+input[type="range"]::-ms-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: red;
+    color: red;
+}
+
+/******** Firefox ********/
+input[type="range"]::-moz-range-track {
+  background: var(--text-color-main);
+  height: 2px;
+}
+
 
 @media screen and (max-width: 600px) {
 	.highscore-table {
@@ -390,6 +472,15 @@ table.highscore {
 	.mode-container {
 		bottom: 15px;
 		top: revert;
+	}
+	.new-hs-container {
+		max-width: 300px;
+		margin: 10px 20px;
+		margin: auto;
+		padding: 10px;
+	}
+	.input-box-size {
+		width: 30px;
 	}
 }
 
