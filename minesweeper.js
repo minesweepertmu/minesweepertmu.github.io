@@ -198,8 +198,9 @@ function updateJSONHighScores(newScore) {
 	
 } */
 
-function makeTheGameHTML2(previousFlags = []){
+function makeTheGameHTML2(previousFlags = [], fixAfterSet=false){
 	mainGameHTML = document.querySelector(".main-game2")
+	if (fixAfterSet) {mainGameHTML.innerHTML=""}
 	for (i = 0; i < rowsG; i++){
 
 		newRow = document.createElement("div")
@@ -229,7 +230,7 @@ function makeTheGameHTML2(previousFlags = []){
 		}
 	}
 		let length = parseInt(getComputedStyle(document.querySelector(".game-row")).width,10)
-		if (colsG * 25 >= length && colsG * 25 > window.innerWidth) {
+		if ((colsG * 25 >= length && colsG * 25 + 26.4 > document.body.clientWidth) || (fixAfterSet)) {
 			document.querySelector("body").style.overflowX = "scroll";
 			document.querySelector("body").style.overflowX = "flex";
 			document.querySelector(".playground").style.display = "block"
@@ -255,7 +256,6 @@ function makeTheGameHTML2(previousFlags = []){
 			document.querySelector(".game-info-container").style.width = "100%"
 			document.querySelector(".main-game-container").style.width = "100%"
 			document.querySelector(".box-menu").style.width = "100%"
-			console.log
 			if (window.innerWidth < 600) {
 				document.querySelector(".box-controls").style.width = "90%"
 				document.querySelector(".box-size").style.width = "90%"
@@ -267,6 +267,10 @@ function makeTheGameHTML2(previousFlags = []){
 			document.querySelector("body").style.width = ""
 			document.querySelector(".playground").style.width = ""
 			document.querySelector(".game-container").style.width = ""
+		}
+		length = parseInt(getComputedStyle(document.querySelector(".game-row")).width,10)
+		if (colsG * 25 >= length && colsG * 25 + 26.4 > document.body.clientWidth) {
+			makeTheGameHTML2(previousFlags, true)
 		}
 	
 }
