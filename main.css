@@ -250,6 +250,7 @@ table.highscore {
 	height: 100%;
 	overflow: auto;
 	display: none;
+	justify-content: center;
 	/*justify-content: center;
 	align-items: center;*/
 	z-index: 2;
@@ -276,7 +277,6 @@ table.highscore {
 	flex-direction: column;
 	align-items: center;
 	position: absolute;
-	left: 75px;
 	top: 25px;
 	z-index: 3;
 	font-size: 25px;

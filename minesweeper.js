@@ -255,8 +255,15 @@ function makeTheGameHTML2(previousFlags = []){
 			document.querySelector(".game-info-container").style.width = "100%"
 			document.querySelector(".main-game-container").style.width = "100%"
 			document.querySelector(".box-menu").style.width = "100%"
-			document.querySelector(".box-controls").style.width = "90%"
-			document.querySelector(".box-size").style.width = "90%"
+			console.log
+			if (window.innerWidth < 600) {
+				document.querySelector(".box-controls").style.width = "90%"
+				document.querySelector(".box-size").style.width = "90%"
+			}
+			else {
+				document.querySelector(".box-controls").style.width = ""
+				document.querySelector(".box-size").style.width = ""
+			}
 			document.querySelector("body").style.width = ""
 			document.querySelector(".playground").style.width = ""
 			document.querySelector(".game-container").style.width = ""
