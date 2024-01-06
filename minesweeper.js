@@ -71,6 +71,10 @@ function applySettings() {
 	}
 	settings = settingsTemp
 	document.querySelector(".long-tap-option").value = settings["long-tap"]
+	onMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+	if (onMobile) {
+		document.querySelector(".long-tap-option").removeAttribute("disabled");
+	}
 	document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${settings["long-tap"]}`;
 }
 
