@@ -1,13 +1,45 @@
-let rowsG = 9
-let colsG = 9
-let mines = 10
-let hardness = "easy"
-let game = []
-let currentFlags = 10
+import { initializeApp } from "firebase/app"
+import {
+	getFirestore, collection, getDocs,
+	updateDoc, doc
+} from "firebase/firestore"
+
+
+let rowsG = 9;
+let colsG = 9;
+let mines = 10;
+let hardness = "easy";
+let game = [];
+let currentFlags = 10;
 let seconds = 0;
 let stopwatchInterval;
 let startTimeInMs;
 let endTimeInMs;
+let onMobile;
+let uiMode;
+let modeContainer;
+let openedDivs;
+let gameStatus;
+let i;
+let j;
+let k;
+let l;
+let randomRow;
+let randomCols;
+let currentElement;
+let count;
+let mainGameHTML;
+let newRow;
+let currentCol;
+let currentRecords;
+let idArray;
+let coordinates;
+let parentOfElement;
+let flagSet;
+let allClosedTiles;
+let allFlaggedTiles;
+let intervalInMs;
+let boxRadios;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
@@ -39,7 +71,7 @@ const darkNumberColorsHex = {
 	0: "#FFFFFF",
 };
 
-currentPallete = numberColorsHex
+let currentPallete = numberColorsHex
 
 const lightModeColors = {
 	"--text-color-main": "#0e1111",
@@ -62,6 +94,22 @@ const darkModeColors = {
   	"--border-color-primary": "#555",
   	"--shadow-color": "rgba(255,255,255,0.3)",
 };
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB0xNyZd1pnFEMmG9xueYXPo_4nFFA9SgU",
+  authDomain: "minesweepertmu.firebaseapp.com",
+  projectId: "minesweepertmu",
+  storageBucket: "minesweepertmu.appspot.com",
+  messagingSenderId: "859604107677",
+  appId: "1:859604107677:web:cbc6f2fbe70fbf93182f74",
+  measurementId: "G-BY1X2EYMFG"
+};
+
+initializeApp(firebaseConfig)
+
+let db = getFirestore();
+
 
 function applySettings() {
 	let settingsTemp = JSON.parse(localStorage.getItem('settings'));
@@ -215,7 +263,7 @@ makeTheMineLawn(rowsG, colsG)
 function firstJSON() {
 	const storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	if (!(storedData)) {
-		localStorage.setItem('highScoresSelf', JSON.stringify({expert:[], int: [], easy: []}));
+		localStorage.setItem('highScoresSelf', JSON.stringify({expert:[], int: [], easy: [], new: "yes"}));
 	}
 }
 firstJSON()
@@ -223,25 +271,25 @@ firstJSON()
 function setJSONHighScores() {
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	storedData.easy.sort((a, b) => a - b);
-	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy[0] < 999) {
-		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
-			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
-			alert("High scores were fixed, so old high scores got deleted")
-			storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
+
+	if (!storedData.new || storedData.new != "yes") {
+		localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: [], new: "yes"}));
+		alert("High scores were fixed, so old high scores got deleted")
+		storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 		}
-	}
 
 	if (storedData) {
 		for (const [key, value] of Object.entries(storedData)) {
+			
 			currentRecords = document.querySelectorAll("."+key+"_high_self")
 			for (i = 1; i <= value.length; i++) {
 				let secondsHS = Math.floor(value[i-1] / 1000)
-				let millisecondsHS = value[i-1] % 1000
+				let millisecondsHS = padWithZeros(value[i-1] % 1000)
 				if (key==="expert") {
-					document.querySelector("#ehs-"+i).textContent = secondsHS + "." + millisecondsHS +"s"
+					document.querySelector("#ehs-"+i).textContent = secondsHS + "." + millisecondsHS +" s"
 				}
 				else if (key==="int") {
-					document.querySelector("#eis-"+i).textContent = secondsHS + "." + millisecondsHS +"s"
+					document.querySelector("#eis-"+i).textContent = secondsHS + "." + millisecondsHS +" s"
 				}
 				else if (key==="easy") {
 					document.querySelector("#hes-"+i).textContent = secondsHS + "." + millisecondsHS +" s"
@@ -257,13 +305,6 @@ function updateJSONHighScores(newScore) {
 
 	let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
 	storedData.easy.sort((a, b) => a - b);
-	if (storedData.expert[0] < 999 || storedData.int[0] < 999 || storedData.easy[0] < 999) {
-		if (storedData.expert[0] !== 0 || storedData.int[0] !== 0 || storedData.easy !== 0) {
-			localStorage.setItem('highScoresSelf', JSON.stringify({expert: [], int: [], easy: []}));
-			alert("High scores were fixed, so old high scores got deleted")
-			storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
-		}
-	}
 
 	if (storedData[hardness].length >= 10) {
 		if (newScore < storedData[hardness][9]) {
@@ -278,6 +319,7 @@ function updateJSONHighScores(newScore) {
 			let place = parseInt(storedData[hardness].indexOf(newScore))+1
 			const numberName = (place == 1 || place == 2 || place == 3) ? namesOfNumbers[place-1] : 'th';
 			document.querySelector(".new-hs").innerHTML = "Wow! " + seconds + "." + millisecondsHS + "s is your new high score in the " + place + numberName +" place."
+			checkDBForHs(newScore);
 		}
 	}
 	else {
@@ -291,10 +333,125 @@ function updateJSONHighScores(newScore) {
 		let place = parseInt(storedData[hardness].indexOf(newScore))+1
 		const numberName = (place == 1 || place == 2 || place == 3) ? namesOfNumbers[place-1] : 'th';
 		document.querySelector(".new-hs").innerHTML = "Wow! " + seconds + "." + millisecondsHS + "s is your new high score in the " + place + numberName +" place."
+		checkDBForHs(newScore);
 	}
 	localStorage.setItem('highScoresSelf', JSON.stringify(storedData));
 	setJSONHighScores()
 	return 0;
+}
+
+
+function setGlobalHighScores() {
+	let colRef = collection(db, "high_scores")
+
+	getDocs(colRef).then((snapshot) => {
+		let highScores = []
+		snapshot.docs.forEach((doc) => {
+			for (const [key, value] of Object.entries(doc.data())) {
+				for (i = 1; i <= value.length; i++) {
+					if(value[i-1]){
+						let [nameOfRecorder, hsOfRecorder] = value[i-1].split(":");
+						hsOfRecorder = parseInt(hsOfRecorder)
+						let secondsHS = Math.floor(hsOfRecorder / 1000)
+						let millisecondsHS = padWithZeros(hsOfRecorder % 1000)
+						if (key==="expert") {
+							document.querySelector("#gesn-"+i).textContent = nameOfRecorder;
+							document.querySelector("#ges-"+i).textContent = secondsHS + "." + millisecondsHS +" s";
+						}
+						else if (key==="int") {
+							document.querySelector("#gisn-"+i).textContent = nameOfRecorder;
+							document.querySelector("#gis-"+i).textContent = secondsHS + "." + millisecondsHS +" s";
+						}
+						else if (key==="easy") {
+							document.querySelector("#hegn-"+i).textContent = nameOfRecorder;
+							document.querySelector("#heg-"+i).textContent = secondsHS + "." + millisecondsHS +" s";
+						}
+					}
+				}
+			}
+		})
+	}).catch(err => {
+		console.log(err)
+	})
+}
+setGlobalHighScores()
+
+
+async function checkDBForHs(score) {
+	let colRef = collection(db, "high_scores");
+
+	getDocs(colRef).then((snapshot) => {
+		let highScores = []
+			snapshot.docs.forEach(async (doc) => {
+				
+				let tempData = doc.data()[hardness]
+
+				for (let i = 0; i < tempData.length; i++) {
+					tempData[i] = tempData[i].split(":")
+					tempData[i][1] = parseInt(tempData[i][1])
+				}
+				if (tempData.length <= 9) {
+					await updateHighScoreGlobal(tempData, score);
+					return 0;
+				}
+				else if(score < tempData[tempData.length - 1][1]) {
+					tempData.pop()
+					await updateHighScoreGlobal(tempData, score);
+					return 0;
+				}
+			})
+	}).catch(err => {
+		console.log(err)
+	})
+}
+
+function promptAsync(message) {
+  return new Promise((resolve) => {
+    document.querySelector('.prompt-container').style.display = 'flex';
+
+    const userNameInput = document.getElementById('userNameInput');
+    const submitButton = document.getElementById('submitButton');
+
+    submitButton.addEventListener('click', function () {
+    	if (userNameInput.value.length >= 4 && userNameInput.value.length <= 15) {
+    		document.querySelector(".error-message-prompt").textContent = ""
+    		document.querySelector('.prompt-container').style.display = 'none';
+    		resolve(userNameInput.value);
+    	}
+    	else {
+    		document.querySelector(".error-message-prompt").textContent = "Length should be more than 4 and less than 15."
+    	}
+
+      document.querySelector(".close-prompt").addEventListener('click', function () {
+				document.querySelector(".prompt-container").style.display = "none"
+				resolve("Unknown");
+				return 0;
+			})
+    });
+  });
+}
+
+async function updateHighScoreGlobal(hardData, score) {
+  let recorderName = await promptAsync("This was a new global hs. How the history will remember your name?");
+  
+  hardData.push([recorderName, score]);
+  hardData.sort((a, b) => a[1] - b[1]);
+
+  for (let i = 0; i < hardData.length; i++) {
+    hardData[i] = `${hardData[i][0]}:${hardData[i][1]}`;
+  }
+
+  const colRef = collection(db, "high_scores");
+  const docRef = doc(db, 'high_scores', 'woZgqLDIFMQmZCqswpiQ');
+
+  try {
+  		await updateDoc(docRef, {
+      	[hardness]: hardData
+    	});
+    setGlobalHighScores();
+  } catch (error) {
+    console.error("Error updating document:", error);
+  }
 }
 
 /* function makeTheGameHTML(){
@@ -477,10 +634,9 @@ function changeTheElement(element, action) {
 		parentOfElement.style.color = currentPallete[parseInt(revealedText)]
 		parentOfElement.textContent = revealedText
 		eventListenerForOpened()
-
-		if (document.querySelectorAll(".game-button").length == mines) {
+		if (document.querySelectorAll(".game-button").length == mines && !(document.querySelector(".game-status").id == "lose")) {
 	    	document.querySelector(".game-status").style.backgroundImage = `url("multimedia/images/win.png")`;
-    	}
+    }
 		return 0
 
 	}
@@ -549,9 +705,10 @@ function inGameButtonClick(eventTarget) {
     	changeTheElement(eventTarget.id, "open")
     	stopStopwatch()
     	gameStatus = document.querySelector(".game-status")
-		gameStatus.id = "lose"
-		gameStatus.style.backgroundImage = `url("multimedia/images/lose.png")`;
-		openTilesAfterLose()
+			gameStatus.id = "lose"
+			gameStatus.style.backgroundImage = `url("multimedia/images/lose.png")`;
+			openTilesAfterLose()
+			return 0;
         //makeTheMineLawn(rowsG, colsG, idArray[0], idArray[1]);
     } else {
         let result = new Set();
@@ -578,7 +735,7 @@ function inGameButtonClick(eventTarget) {
         	changeTheElement(element, "open")
         });
     }
-    if (document.querySelectorAll(".game-button").length == mines) {
+    if (document.querySelectorAll(".game-button").length == mines && !(document.querySelector(".game-status").id == "lose")) {
     	// When winning the game
     	stopStopwatch()
     	document.querySelector(".mines-container").textContent = "000"
@@ -588,8 +745,8 @@ function inGameButtonClick(eventTarget) {
 		endTimeInMs = new Date().getTime();
 		intervalInMs = endTimeInMs - startTimeInMs;
 
-		updateStopwatchWithMs(intervalInMs % 1000) // Last three digits, that is, the milliseconds
-		updateJSONHighScores(intervalInMs)
+		updateStopwatchWithMs(intervalInMs % 1000); // Last three digits, that is, the milliseconds
+		updateJSONHighScores(intervalInMs);
     	return 0;
     }
 }
@@ -919,4 +1076,31 @@ document.querySelector('.long-tap-option').addEventListener('input', function ()
     settings["long-tap"] = currentValue;
     localStorage.setItem("settings", JSON.stringify(settings))
     document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${currentValue}`;
+});
+
+document.querySelectorAll('.hs-a').forEach((elem) => {
+	elem.addEventListener("click", function (ev) {
+		if (ev.target.classList.contains("disabled-a")) {
+			return 0;
+		}
+		else {
+			if (ev.target.classList.contains("hs-local")) {
+				document.querySelector(".global-hs-container").style.display = "none";
+				document.querySelector(".local-hs-container").style.display = "block";
+				ev.target.classList.add("disabled-a");
+				document.querySelector(".hs-global").classList.remove("disabled-a");
+				return 0;
+			}
+			else if (ev.target.classList.contains("hs-global")) {
+				document.querySelector(".local-hs-container").style.display = "none";
+				document.querySelector(".global-hs-container").style.display = "block";
+				ev.target.classList.add("disabled-a");
+				document.querySelector(".hs-local").classList.remove("disabled-a");
+				return 0;
+			}
+			else {
+				return 0;
+			}
+		}
+	})
 });
