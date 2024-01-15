@@ -1,14 +1,11 @@
 # Node.js
 node_modules/
 
-# Build output
-dist/
-
 # Firebase
 .firebase/
 
 # IDE and editor files
-.prepos.config
+prepos.config
 
 # Dependency lock files
 package-lock.json
