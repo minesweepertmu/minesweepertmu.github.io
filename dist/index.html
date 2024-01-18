@@ -7,519 +7,510 @@
     <title>Minesweeper</title>
     <link rel="stylesheet" href="main.css">
     <link rel="shortcut icon" href="multimedia/icons/ms_flag.svg">
-
+    <meta property="og:title" content="Minesweeper Online">
+    <meta property="og:description" content="Original minesweeper with better graphics and online high scores!">
+    <meta property="og:image" content="multimedia/images/meta.png">
+    <meta property="og:url" content="minesweepertmu.web.app">
+    <meta property="og:type" content="website">
 </head>
- 
+
 <body>
-	<div class="mode-container light">
-		
-	</div>
-	<div class="menu-main">
-		<a href="javascript:void(0);" class="menu-size">Board size</a>
-		|
-		<a href="javascript:void(0);" class="menu-controls">Controls</a>
-		|
-		<a href="javascript:void(0);" class="menu-options">Options</a>
-	</div>
-	<div class="box-menu">
-		<div class="box-controls">
-			<div class="controls-top">
-				<p>
-					Controls:
-				</p>
-				<div class="close-controls">
-					
-				</div>
-			</div>
-			<table class="controls-table">
-				<tbody>
-					<tr>
-						<td>Desktop: </td>
-						<td>
-							<ul>
-							  <li>Left-click an empty square to reveal it.</li>
-							  <li>Right-click an empty square to flag it.</li>
-							  <li>Left-click a number to reveal its adjacent squares.</li>
-							  <li>Right-click a number to flag its adjacent squares</li>
-							</ul>
-						</td>
-					</tr>
-					<tr>
-						<td>Mobile: </td>
-						<td>
-							<ul>
-							  <li>Tap an empty square to reveal it.</li>
-							  <li>Long tap an empty square to flag it.</li>
-							  <li>Tap a number to reveal its adjacent squares.</li>
-							  <li>Long tap a number to flag its adjacent squares</li>
-							</ul>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="box-size">
-			<div class="controls-top">
-				<p>
-					Game grid size:
-				</p>
-				<div class="close-controls">
-					
-				</div>
-			</div>
-			<div class="box-settings-container">
-				<form action="">
-					<table>
-						<tbody>
-							<tr>
-								<td></td>
-								<td>Height</td>
-								<td>Width</td>
-								<td>Mines</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="radio" id="radio__small" name="box_size" value="small" checked>
-									<label for="radio__small">Beginner</label>
-								</td>
-								<td>9</td>
-								<td>9</td>
-								<td>10</td>
-							</tr>
-							<tr>
-								<td>						
-									<input type="radio" id="radio__mid" name="box_size" value="middle">
-									<label for="radio__mid">Intermediate</label>
-								</td>
-								<td>16</td>
-								<td>16</td>
-								<td>40</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="radio" id="radio__big" name="box_size" value="big">
-									<label for="radio__big">Expert</label>
-								</td>
-								<td>16</td>
-								<td>30</td>
-								<td>99</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="radio" id="radio__custom" name="box_size" value="custom">
-									<label for="radio__custom">Custom</label>
-								</td>
-								<td><input type="number" id="custom_rows" class="input-box-size" value="20"></td>
-								<td><input type="number" id="custom_cols" class="input-box-size" value="30"></td>
-								<td><input type="number" id="custom_mines" class="input-box-size" value="145"></td>
-							</tr>
-						</tbody>
-					</table>
-					<div class="size-button-container">
-						<input type="button" value="New game" class="new-box-button">
-					</div>
-				</form>
-			</div>
-		</div>
-		<div class="box-options">
-			<div class="controls-top">
-				<p>
-					Options:
-				</p>
-				<div class="close-controls">
-					
-				</div>
-			</div>
-			<div class="options-container">
-				<p class="options-title">Long tap duration</p>
-				<label class= "options-label" for="long-tap-option">Long tap duration on mobile, in milliseconds. Default value is 250ms</label>
-				<input type="range" id="long-tap-option" class="long-tap-option" min="150" max="500" step="10" value="250" disabled="true"/>
-
-    			<p class="long-tap-option-setting current-value">Current Value: 250</p>
-			</div>
-		</div>
-	</div>
-	<div class="prompt-container">
-		<div class="box-prompt">
-			<div class="controls-top">
-				<p>
-					This was a new global record!
-				</p>
-				<div class="close-prompt">
-						
-				</div>
-			</div>
-			<div class="prompt-main">
-				<label for="userNameInput"> How the history will remember you?</label>
-				<input type="text" id="userNameInput" placeholder="Enter your name">
-		 		<button id="submitButton">Submit</button>
-		 		<p class="error-message-prompt"></p>
-			</div>
-		</div>
-	</div>
-	<div class="playground">
-		<div class="game-container">
-			<div class="game-info-container">
-				<div class="game-info-decorative">
-					<div class="mines-container">
-					</div>
-					<div class="game-status" id="start">
-					</div>
-					<div class="time-stopwatch">
-						000
-					</div>
-				</div>
-			</div>
-			<div class="main-game-container">
-				<div class="main-game2">
-				
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="new-hs-container">
-		<div class="new-hs">
-			This was a new high score!
-		</div>
-	</div>
-
-	<div class="hs-controls">
-		<a href="javascript:void(0);" class="hs-a hs-local disabled-a">Your High Scores</a>
-		|
-		<a href="javascript:void(0);" class="hs-a hs-global">Global High Scores</a>
-	</div>
-	<div class="local-hs-container">
-		<div class="highscore-text-container">
-			<h2>Your high scores:</h2>
-		</div>
-		
-		<div class="highscore-table">
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-						<h4>Expert: </h4>
-						<tr>
-							<td>1.</td>
-							<td class="expert_high_self" id="ehs-1"></td>
-						</tr>
-						<tr>
-							<td>2.</td>
-							<td class="expert_high_self" id="ehs-2"></td>
-						</tr>
-						<tr>
-							<td>3.</td>
-							<td class="expert_high_self" id="ehs-3"></td>
-						</tr>
-						<tr>
-							<td>4.</td>
-							<td class="expert_high_self" id="ehs-4"></td>
-						</tr>
-						<tr>
-							<td>5.</td>
-							<td class="expert_high_self" id="ehs-5"></td>
-						</tr>
-						<tr>
-							<td>6.</td>
-							<td class="expert_high_self" id="ehs-6"></td>
-						</tr>
-						<tr>
-							<td>7.</td>
-							<td class="expert_high_self" id="ehs-7"></td>
-						</tr>
-						<tr>
-							<td>8.</td>
-							<td class="expert_high_self" id="ehs-8"></td>
-						</tr>
-						<tr>
-							<td>9.</td>
-							<td class="expert_high_self" id="ehs-9"></td>
-						</tr>
-						<tr>
-							<td>10.</td>
-							<td class="expert_high_self" id="ehs-10"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-						<h4>Intermediate: </h4>
-						<tr>
-							<td>1.</td>
-							<td class="int_high_self" id="eis-1"></td>
-						</tr>
-						<tr>
-							<td>2.</td>
-							<td class="int_high_self" id="eis-2"></td>
-						</tr>
-						<tr>
-							<td>3.</td>
-							<td class="int_high_self" id="eis-3"></td>
-						</tr>
-						<tr>
-							<td>4.</td>
-							<td class="int_high_self" id="eis-4"></td>
-						</tr>
-						<tr>
-							<td>5.</td>
-							<td class="int_high_self" id="eis-5"></td>
-						</tr>
-						<tr>
-							<td>6.</td>
-							<td class="int_high_self" id="eis-6"></td>
-						</tr>
-						<tr>
-							<td>7.</td>
-							<td class="int_high_self" id="eis-7"></td>
-						</tr>
-						<tr>
-							<td>8.</td>
-							<td class="int_high_self" id="eis-8"></td>
-						</tr>
-						<tr>
-							<td>9.</td>
-							<td class="int_high_self" id="eis-9"></td>
-						</tr>
-						<tr>
-							<td>10.</td>
-							<td class="int_high_self" id="eis-10"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-						<h4>Beginner: </h4>
-						<tr>
-							<td>1.</td>
-							<td class="easy_high_self" id="hes-1"></td>
-						</tr>
-						<tr>
-							<td>2.</td>
-							<td class="easy_high_self" id="hes-2"></td>
-						</tr>
-						<tr>
-							<td>3.</td>
-							<td class="easy_high_self" id="hes-3"></td>
-						</tr>
-						<tr>
-							<td>4.</td>
-							<td class="easy_high_self" id="hes-4"></td>
-						</tr>
-						<tr>
-							<td>5.</td>
-							<td class="easy_high_self" id="hes-5"></td>
-						</tr>
-						<tr>
-							<td>6.</td>
-							<td class="easy_high_self" id="hes-6"></td>
-						</tr>
-						<tr>
-							<td>7.</td>
-							<td class="easy_high_self" id="hes-7"></td>
-						</tr>
-						<tr>
-							<td>8.</td>
-							<td class="easy_high_self" id="hes-8"></td>
-						</tr>
-						<tr>
-							<td>9.</td>
-							<td class="easy_high_self" id="hes-9"></td>
-						</tr>
-						<tr>
-							<td>10.</td>
-							<td class="easy_high_self" id="hes-10"></td>
-						</tr>
-					</tbody>
-				</table>
-				</div>
-			</div>
-		</div>
-
-	<div class="global-hs-container">
-		<div class="highscore-text-container">
-			<h2>Global high scores:</h2>
-		</div>
-		
-		<div class="highscore-table">
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-			            <h4>Expert: </h4>
-			            <tr>
-			                <td>1.</td>
-			                <td class="expert_high_self" id="gesn-1"></td>
-			                <td class="expert_high_self" id="ges-1"></td>
-			            </tr>
-			            <tr>
-			                <td>2.</td>
-			                <td class="expert_high_self" id="gesn-2"></td>
-			                <td class="expert_high_self" id="ges-2"></td>
-			            </tr>
-			            <tr>
-			                <td>3.</td>
-			                <td class="expert_high_self" id="gesn-3"></td>
-			                <td class="expert_high_self" id="ges-3"></td>
-			            </tr>
-			            <tr>
-			                <td>4.</td>
-			                <td class="expert_high_self" id="gesn-4"></td>
-			                <td class="expert_high_self" id="ges-4"></td>
-			            </tr>
-			            <tr>
-			                <td>5.</td>
-			                <td class="expert_high_self" id="gesn-5"></td>
-			                <td class="expert_high_self" id="ges-5"></td>
-			            </tr>
-			            <tr>
-			                <td>6.</td>
-			                <td class="expert_high_self" id="gesn-6"></td>
-			                <td class="expert_high_self" id="ges-6"></td>
-			            </tr>
-			            <tr>
-			                <td>7.</td>
-			                <td class="expert_high_self" id="gesn-7"></td>
-			                <td class="expert_high_self" id="ges-7"></td>
-			            </tr>
-			            <tr>
-			                <td>8.</td>
-			                <td class="expert_high_self" id="gesn-8"></td>
-			                <td class="expert_high_self" id="ges-8"></td>
-			            </tr>
-			            <tr>
-			                <td>9.</td>
-			                <td class="expert_high_self" id="gesn-9"></td>
-			                <td class="expert_high_self" id="ges-9"></td>
-			            </tr>
-			            <tr>
-			                <td>10.</td>
-			                <td class="expert_high_self" id="gesn-10"></td>
-			                <td class="expert_high_self" id="ges-10"></td>
-			            </tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-						<h4>Intermediate: </h4>
-			            <tr>
-			                <td>1.</td>
-			                <td class="int_high_self" id="gisn-1"></td>
-			                <td class="int_high_self" id="gis-1"></td>
-			            </tr>
-			            <tr>
-			                <td>2.</td>
-			                <td class="int_high_self" id="gisn-2"></td>
-			                <td class="int_high_self" id="gis-2"></td>
-			            </tr>
-			            <tr>
-			                <td>3.</td>
-			                <td class="int_high_self" id="gisn-3"></td>
-			                <td class="int_high_self" id="gis-3"></td>
-			            </tr>
-			            <tr>
-			                <td>4.</td>
-			                <td class="int_high_self" id="gisn-4"></td>
-			                <td class="int_high_self" id="gis-4"></td>
-			            </tr>
-			            <tr>
-			                <td>5.</td>
-			                <td class="int_high_self" id="gisn-5"></td>
-			                <td class="int_high_self" id="gis-5"></td>
-			            </tr>
-			            <tr>
-			                <td>6.</td>
-			                <td class="int_high_self" id="gisn-6"></td>
-			                <td class="int_high_self" id="gis-6"></td>
-			            </tr>
-			            <tr>
-			                <td>7.</td>
-			                <td class="int_high_self" id="gisn-7"></td>
-			                <td class="int_high_self" id="gis-7"></td>
-			            </tr>
-			            <tr>
-			                <td>8.</td>
-			                <td class="int_high_self" id="gisn-8"></td>
-			                <td class="int_high_self" id="gis-8"></td>
-			            </tr>
-			            <tr>
-			                <td>9.</td>
-			                <td class="int_high_self" id="gisn-9"></td>
-			                <td class="int_high_self" id="gis-9"></td>
-			            </tr>
-			            <tr>
-			                <td>10.</td>
-			                <td class="int_high_self" id="gisn-10"></td>
-			                <td class="int_high_self" id="gis-10"></td>
-			            </tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="highscore-table-container">
-				<table class="highscore hs-expert">
-					<tbody>
-			            <h4>Beginner: </h4>
-			            <tr>
-			                <td>1.</td>
-			                <td class="easy_high_self" id="hegn-1"></td>
-			                <td class="easy_high_self" id="heg-1"></td>
-			            </tr>
-			            <tr>
-			                <td>2.</td>
-			                <td class="easy_high_self" id="hegn-2"></td>
-			                <td class="easy_high_self" id="heg-2"></td>
-			            </tr>
-			            <tr>
-			                <td>3.</td>
-			                <td class="easy_high_self" id="hegn-3"></td>
-			                <td class="easy_high_self" id="heg-3"></td>
-			            </tr>
-			            <tr>
-			                <td>4.</td>
-			                <td class="easy_high_self" id="hegn-4"></td>
-			                <td class="easy_high_self" id="heg-4"></td>
-			            </tr>
-			            <tr>
-			                <td>5.</td>
-			                <td class="easy_high_self" id="hegn-5"></td>
-			                <td class="easy_high_self" id="heg-5"></td>
-			            </tr>
-			            <tr>
-			                <td>6.</td>
-			                <td class="easy_high_self" id="hegn-6"></td>
-			                <td class="easy_high_self" id="heg-6"></td>
-			            </tr>
-			            <tr>
-			                <td>7.</td>
-			                <td class="easy_high_self" id="hegn-7"></td>
-			                <td class="easy_high_self" id="heg-7"></td>
-			            </tr>
-			            <tr>
-			                <td>8.</td>
-			                <td class="easy_high_self" id="hegn-8"></td>
-			                <td class="easy_high_self" id="heg-8"></td>
-			            </tr>
-			            <tr>
-			                <td>9.</td>
-			                <td class="easy_high_self" id="hegn-9"></td>
-			                <td class="easy_high_self" id="heg-9"></td>
-			            </tr>
-			            <tr>
-			                <td>10.</td>
-			                <td class="easy_high_self" id="hegn-10"></td>
-			                <td class="easy_high_self" id="heg-10"></td>
-			            </tr>
-		        	</tbody>
-				</table>
-				</div>
-			</div>
-		</div>
-	<script src="bundle.js" defer></script>
+    <div class="mode-container light">
+    </div>
+    <div class="menu-main">
+        <a href="javascript:void(0);" class="menu-size">Board size</a>
+        |
+        <a href="javascript:void(0);" class="menu-controls">Controls</a>
+        |
+        <a href="javascript:void(0);" class="menu-options">Options</a>
+    </div>
+    <div class="box-menu">
+        <div class="box-controls">
+            <div class="controls-top">
+                <p>
+                    Controls:
+                </p>
+                <div class="close-controls">
+                </div>
+            </div>
+            <table class="controls-table">
+                <tbody>
+                    <tr>
+                        <td>Desktop: </td>
+                        <td>
+                            <ul>
+                                <li>Left-click an empty square to reveal it.</li>
+                                <li>Right-click an empty square to flag it.</li>
+                                <li>Left-click a number to reveal its adjacent squares.</li>
+                                <li>Right-click a number to flag its adjacent squares</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mobile: </td>
+                        <td>
+                            <ul>
+                                <li>Tap an empty square to reveal it.</li>
+                                <li>Long tap an empty square to flag it.</li>
+                                <li>Tap a number to reveal its adjacent squares.</li>
+                                <li>Long tap a number to flag its adjacent squares</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-size">
+            <div class="controls-top">
+                <p>
+                    Game grid size:
+                </p>
+                <div class="close-controls">
+                </div>
+            </div>
+            <div class="box-settings-container">
+                <form action="">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>Height</td>
+                                <td>Width</td>
+                                <td>Mines</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="radio__small" name="box_size" value="small" checked>
+                                    <label for="radio__small">Beginner</label>
+                                </td>
+                                <td>9</td>
+                                <td>9</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="radio__mid" name="box_size" value="middle">
+                                    <label for="radio__mid">Intermediate</label>
+                                </td>
+                                <td>16</td>
+                                <td>16</td>
+                                <td>40</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="radio__big" name="box_size" value="big">
+                                    <label for="radio__big">Expert</label>
+                                </td>
+                                <td>16</td>
+                                <td>30</td>
+                                <td>99</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="radio__custom" name="box_size" value="custom">
+                                    <label for="radio__custom">Custom</label>
+                                </td>
+                                <td><input type="number" id="custom_rows" class="input-box-size" value="20"></td>
+                                <td><input type="number" id="custom_cols" class="input-box-size" value="30"></td>
+                                <td><input type="number" id="custom_mines" class="input-box-size" value="145"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="size-button-container">
+                        <input type="button" value="New game" class="new-box-button">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-options">
+            <div class="controls-top">
+                <p>
+                    Options:
+                </p>
+                <div class="close-controls">
+                </div>
+            </div>
+            <div class="options-container">
+                <p class="options-title">Long tap duration</p>
+                <label class="options-label" for="long-tap-option">Long tap duration on mobile, in milliseconds. Default value is 250ms</label>
+                <input type="range" id="long-tap-option" class="long-tap-option" min="150" max="500" step="10" value="250" disabled="true" />
+                <p class="long-tap-option-setting current-value">Current Value: 250</p>
+            </div>
+        </div>
+    </div>
+    <div class="prompt-container">
+        <div class="box-prompt">
+            <div class="controls-top">
+                <p>
+                    This was a new global record!
+                </p>
+                <div class="close-prompt">
+                </div>
+            </div>
+            <div class="prompt-main">
+                <label for="userNameInput"> How the history will remember you?</label>
+                <input type="text" id="userNameInput" placeholder="Enter your name">
+                <button id="submitButton">Submit</button>
+                <p class="error-message-prompt"></p>
+            </div>
+        </div>
+    </div>
+    <div class="playground">
+        <div class="game-container">
+            <div class="game-info-container">
+                <div class="game-info-decorative">
+                    <div class="mines-container">
+                    </div>
+                    <div class="game-status" id="start">
+                    </div>
+                    <div class="time-stopwatch">
+                        000
+                    </div>
+                </div>
+            </div>
+            <div class="main-game-container">
+                <div class="main-game2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="new-hs-container">
+        <div class="new-hs">
+            This was a new high score!
+        </div>
+    </div>
+    <div class="hs-controls">
+        <a href="javascript:void(0);" class="hs-a hs-local disabled-a">Your High Scores</a>
+        |
+        <a href="javascript:void(0);" class="hs-a hs-global">Global High Scores</a>
+    </div>
+    <div class="local-hs-container">
+        <div class="highscore-text-container">
+            <h2>Your high scores:</h2>
+        </div>
+        <div class="highscore-table">
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Expert: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="expert_high_self" id="ehs-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="expert_high_self" id="ehs-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="expert_high_self" id="ehs-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="expert_high_self" id="ehs-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="expert_high_self" id="ehs-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="expert_high_self" id="ehs-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="expert_high_self" id="ehs-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="expert_high_self" id="ehs-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="expert_high_self" id="ehs-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="expert_high_self" id="ehs-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Intermediate: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="int_high_self" id="eis-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="int_high_self" id="eis-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="int_high_self" id="eis-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="int_high_self" id="eis-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="int_high_self" id="eis-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="int_high_self" id="eis-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="int_high_self" id="eis-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="int_high_self" id="eis-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="int_high_self" id="eis-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="int_high_self" id="eis-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Beginner: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="easy_high_self" id="hes-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="easy_high_self" id="hes-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="easy_high_self" id="hes-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="easy_high_self" id="hes-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="easy_high_self" id="hes-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="easy_high_self" id="hes-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="easy_high_self" id="hes-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="easy_high_self" id="hes-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="easy_high_self" id="hes-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="easy_high_self" id="hes-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="global-hs-container">
+        <div class="highscore-text-container">
+            <h2>Global high scores:</h2>
+        </div>
+        <div class="highscore-table">
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Expert: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="expert_high_self" id="gesn-1"></td>
+                            <td class="expert_high_self" id="ges-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="expert_high_self" id="gesn-2"></td>
+                            <td class="expert_high_self" id="ges-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="expert_high_self" id="gesn-3"></td>
+                            <td class="expert_high_self" id="ges-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="expert_high_self" id="gesn-4"></td>
+                            <td class="expert_high_self" id="ges-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="expert_high_self" id="gesn-5"></td>
+                            <td class="expert_high_self" id="ges-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="expert_high_self" id="gesn-6"></td>
+                            <td class="expert_high_self" id="ges-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="expert_high_self" id="gesn-7"></td>
+                            <td class="expert_high_self" id="ges-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="expert_high_self" id="gesn-8"></td>
+                            <td class="expert_high_self" id="ges-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="expert_high_self" id="gesn-9"></td>
+                            <td class="expert_high_self" id="ges-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="expert_high_self" id="gesn-10"></td>
+                            <td class="expert_high_self" id="ges-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Intermediate: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="int_high_self" id="gisn-1"></td>
+                            <td class="int_high_self" id="gis-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="int_high_self" id="gisn-2"></td>
+                            <td class="int_high_self" id="gis-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="int_high_self" id="gisn-3"></td>
+                            <td class="int_high_self" id="gis-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="int_high_self" id="gisn-4"></td>
+                            <td class="int_high_self" id="gis-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="int_high_self" id="gisn-5"></td>
+                            <td class="int_high_self" id="gis-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="int_high_self" id="gisn-6"></td>
+                            <td class="int_high_self" id="gis-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="int_high_self" id="gisn-7"></td>
+                            <td class="int_high_self" id="gis-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="int_high_self" id="gisn-8"></td>
+                            <td class="int_high_self" id="gis-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="int_high_self" id="gisn-9"></td>
+                            <td class="int_high_self" id="gis-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="int_high_self" id="gisn-10"></td>
+                            <td class="int_high_self" id="gis-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="highscore-table-container">
+                <table class="highscore hs-expert">
+                    <tbody>
+                        <h4>Beginner: </h4>
+                        <tr>
+                            <td>1.</td>
+                            <td class="easy_high_self" id="hegn-1"></td>
+                            <td class="easy_high_self" id="heg-1"></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td class="easy_high_self" id="hegn-2"></td>
+                            <td class="easy_high_self" id="heg-2"></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td class="easy_high_self" id="hegn-3"></td>
+                            <td class="easy_high_self" id="heg-3"></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td class="easy_high_self" id="hegn-4"></td>
+                            <td class="easy_high_self" id="heg-4"></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td class="easy_high_self" id="hegn-5"></td>
+                            <td class="easy_high_self" id="heg-5"></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td class="easy_high_self" id="hegn-6"></td>
+                            <td class="easy_high_self" id="heg-6"></td>
+                        </tr>
+                        <tr>
+                            <td>7.</td>
+                            <td class="easy_high_self" id="hegn-7"></td>
+                            <td class="easy_high_self" id="heg-7"></td>
+                        </tr>
+                        <tr>
+                            <td>8.</td>
+                            <td class="easy_high_self" id="hegn-8"></td>
+                            <td class="easy_high_self" id="heg-8"></td>
+                        </tr>
+                        <tr>
+                            <td>9.</td>
+                            <td class="easy_high_self" id="hegn-9"></td>
+                            <td class="easy_high_self" id="heg-9"></td>
+                        </tr>
+                        <tr>
+                            <td>10.</td>
+                            <td class="easy_high_self" id="hegn-10"></td>
+                            <td class="easy_high_self" id="heg-10"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="bundle.js" defer></script>
 </body>
- 
- 
- 
+
 </html>
