@@ -660,7 +660,7 @@ function openTilesAfterLose() {
         idArray = el.id.split("/");
         if (game[idArray[0]][idArray[1]] !== -1) {
             parentOfElement = el.parentNode
-            changeTheElement(el, "openFlag", areAdjacentElementsEqual())
+            changeTheElement(el, "openFlag")
             changeTheElement(parentOfElement, "wrongFlag")
         }
     });
