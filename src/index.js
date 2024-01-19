@@ -85,6 +85,7 @@ const lightModeColors = {
     "--secondary-color": "#CDCFD0",
     "--shadow-color": "rgba(0,0,0,0.3)",
     "--border-color-primary": "#EEEEEE",
+    "--mine-color": "#E11F23",
 };
 
 const darkModeColors = {
@@ -96,6 +97,7 @@ const darkModeColors = {
     "--secondary-color": "#FFFFFB",
     "--border-color-primary": "#555",
     "--shadow-color": "rgba(255,255,255,0.3)",
+    "--mine-color": "#CD0B0F",
 };
 
 
@@ -591,7 +593,7 @@ function onFirstClick(event) {
 
 }
 
-function changeTheElement(element, action) {
+function changeTheElement(element, action, lost = false) {
     if (action === "open") {
         currentElement = document.getElementById(element)
         if (currentElement === null || currentElement.classList.contains("flagged")) {
@@ -605,6 +607,9 @@ function changeTheElement(element, action) {
         let revealedText = game[idArray[0]][idArray[1]] === 0 ? " " : game[idArray[0]][idArray[1]];
 
         if (revealedText == "-1") {
+				    if (lost == true) {
+				    	parentOfElement.style.backgroundColor = "var(--mine-color)"
+				    }
             parentOfElement.style.backgroundImage = `url("multimedia/icons/mine_2.svg")`;
             return 0
         }
@@ -644,6 +649,7 @@ function changeTheElement(element, action) {
     } else if (action === "close") {
         element.classList.add("closed")
     }
+
 }
 
 function openTilesAfterLose() {
@@ -654,7 +660,7 @@ function openTilesAfterLose() {
         idArray = el.id.split("/");
         if (game[idArray[0]][idArray[1]] !== -1) {
             parentOfElement = el.parentNode
-            changeTheElement(el, "openFlag")
+            changeTheElement(el, "openFlag", areAdjacentElementsEqual())
             changeTheElement(parentOfElement, "wrongFlag")
         }
     });
@@ -674,7 +680,9 @@ function inGameButtonClick(eventTarget) {
     idArray = eventTarget.id.split("/");
 
     if (game[idArray[0]][idArray[1]] == -1) {
-        changeTheElement(eventTarget.id, "open")
+        changeTheElement(eventTarget.id, "open", true)
+        
+        eventTarget.classList.add("lost-tile");
         stopStopwatch()
         gameStatus = document.querySelector(".game-status")
         gameStatus.id = "lose"

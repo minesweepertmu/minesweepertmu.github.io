@@ -7,6 +7,7 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
     --border-color-primary: #EEE;
     --secondary-color: #7B7B7B;
+    --mine-color: #E11F23;
 }
 
 @font-face {
@@ -184,6 +185,10 @@ p {
     background-size: 80%;
     background-position: center center;
     background-repeat: no-repeat;
+}
+
+.lost-tile {
+	background-color: var(--mine-color);
 }
 
 .game-info-container {
