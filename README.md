@@ -1,4 +1,4 @@
-# Minesweeper Online
+# 💣 Minesweeper Online
 
 This is a web-based version of the classic Minesweeper game, with some extra features and improvements. Here are some of the highlights:
 
@@ -7,4 +7,4 @@ This is a web-based version of the classic Minesweeper game, with some extra fea
 - 💻 Application made with pure JS, HTML and CSS: The game logic, interface and animations, all made using pure JS, HTML and CSS, so the website loads and runs very fast💨.
 - 🤖 I am planning on adding a bot that will automatically solve the game, using some clever algorithms and heuristics. This will be a fun and educational feature to see how a computer can play Minesweeper.
 
-I hope you enjoy playing Minesweeper Online and feel free to give me any feedback or suggestions.
+🙃 I hope you enjoy playing Minesweeper Online and feel free to give me any feedback or suggestions.
