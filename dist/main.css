@@ -330,7 +330,8 @@ table.highscore {}
 .box-controls,
 .box-size,
 .box-options,
-.box-prompt {
+.box-prompt,
+.box-import {
     min-width: 300px;
     background-color: var(--background-color);
     display: none;
@@ -390,7 +391,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
 }
 
-.box-menu input[type="button"] {
+.box-menu input[type="button"], button {
     border: 3.5px outset;
     background-color: var(--secondary-color);
     font-family: 'teko';
@@ -400,10 +401,14 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 5px 15px;
 }
 
-.box-menu input[type="button"]:active {
+.box-menu input[type="button"]:active, button:active {
     background-position: right 3.5px bottom 3.5px;
     border: 3.5px inset;
     padding: 7px 13px 3px 17px;
+}
+
+.import-button button {
+    margin: 0;
 }
 
 .close-controls,
@@ -416,6 +421,10 @@ input[type="number"]::-webkit-outer-spin-button {
     background-position: center;
 }
 
+.import-export textarea {
+    height: 100px;
+    font-size:18px;
+}
 
 
 .new-hs-container {
@@ -441,12 +450,43 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 90%;
 }
 
-.options-title {
+.options-title, .import-title {
     margin-block-start: 0;
     margin-block-end: 0;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     margin-top: 15px;
+}
+
+.import-container {
+    margin-bottom: 10px;
+}
+
+.input-import {
+    width: 278px;
+    border-radius: none;
+    font-family: 'teko';
+    font-size: 25px;
+    border: 3px inset;
+    outline: none;
+    box-sizing: border-box;
+    border-bottom: 10px;
+    resize: none;
+}
+
+.import-container > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkbox-container label {
+    font-size: 18px;
+}
+
+.import-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .options-label {

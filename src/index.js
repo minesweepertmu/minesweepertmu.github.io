@@ -1,48 +1,13 @@
 import { initializeApp } from "firebase/app"
 import {
-    getFirestore,
-    collection,
-    getDocs,
-    updateDoc,
-    doc
+    getFirestore, collection, getDocs, updateDoc, doc
 } from "firebase/firestore"
 
+import { 
+    numberColorsHex, darkNumberColorsHex, lightModeColors, darkModeColors, firebaseConfig 
+} from "./constants.js";
 
-let rowsG = 9;
-let colsG = 9;
-let mines = 10;
-let hardness = "easy";
-let game = [];
-let currentFlags = 10;
-let seconds = 0;
-let stopwatchInterval;
-let startTimeInMs;
-let endTimeInMs;
-let onMobile;
-let uiMode;
-let modeContainer;
-let openedDivs;
-let gameStatus;
-let i;
-let j;
-let k;
-let l;
-let randomRow;
-let randomCols;
-let currentElement;
-let count;
-let mainGameHTML;
-let newRow;
-let currentCol;
-let currentRecords;
-let idArray;
-let coordinates;
-let parentOfElement;
-let flagSet;
-let allClosedTiles;
-let allFlaggedTiles;
-let intervalInMs;
-let boxRadios;
+let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
@@ -50,66 +15,7 @@ let settings = {
     "long-tap": 250,
 }
 
-const numberColorsHex = {
-    1: "#001EC1",
-    2: "#018100",
-    3: "#CF0000",
-    4: "#102E61",
-    5: "#620000",
-    6: "#239E9F",
-    7: "#0E1111",
-    8: "#434554",
-    0: "#FFFFFF",
-};
-
-const darkNumberColorsHex = {
-    1: "#3478DE",
-    2: "#49C049",
-    3: "#C93030",
-    4: "#165EC9",
-    5: "#B80606",
-    6: "#1AA8A8",
-    7: "#787C97",
-    8: "#B1B8BB",
-    0: "#FFFFFF",
-};
-
-let currentPallete = numberColorsHex
-
-const lightModeColors = {
-    "--text-color-main": "#0e1111",
-    "--link-color": "#001EC1",
-    "--background-color": "#FFFFFB",
-    "--primary-color": "#CDCFD0",
-    "--border-color": "#7B7B7B",
-    "--secondary-color": "#CDCFD0",
-    "--shadow-color": "rgba(0,0,0,0.3)",
-    "--border-color-primary": "#EEEEEE",
-    "--mine-color": "#E11F23",
-};
-
-const darkModeColors = {
-    "--text-color-main": "#FFFFFB",
-    "--link-color": "#58a6ff",
-    "--background-color": "#0e1111",
-    "--primary-color": "#33383A",
-    "--border-color": "#222",
-    "--secondary-color": "#FFFFFB",
-    "--border-color-primary": "#555",
-    "--shadow-color": "rgba(255,255,255,0.3)",
-    "--mine-color": "#CD0B0F",
-};
-
-
-const firebaseConfig = {
-    apiKey: "AIzaSyB0xNyZd1pnFEMmG9xueYXPo_4nFFA9SgU",
-    authDomain: "minesweepertmu.firebaseapp.com",
-    projectId: "minesweepertmu",
-    storageBucket: "minesweepertmu.appspot.com",
-    messagingSenderId: "859604107677",
-    appId: "1:859604107677:web:cbc6f2fbe70fbf93182f74",
-    measurementId: "G-BY1X2EYMFG"
-};
+let currentPallete = numberColorsHex;
 
 initializeApp(firebaseConfig)
 
@@ -1041,6 +947,26 @@ document.querySelector(".main-game2").addEventListener("mouseup", () => {
     document.querySelector(".game-status").style.backgroundImage = `url("multimedia/images/default.png")`;
 })
 
+function matrixToString(matrix) {
+  const colsStr = colsG.toString().padStart(2, '0'); // Convert to string and pad with leading zeros if needed
+  const matrixString = matrix.flat().map(element => (element === -1 ? '9' : element.toString())).join('');
+  return colsStr + matrixString;
+}
+
+function encodeMatrix(matrix) {
+  const matrixString = matrixToString(matrix);
+  return btoa(matrixString); // Base64 encoding
+}
+
+function decodeMatrix(encodedString) {
+  const decodedString = atob(encodedString); // Base64 decoding
+  const cols = parseInt(decodedString.substring(0, 2)); // Extract number of columns
+  const matrixString = decodedString.substring(2); // Extract matrix string
+  // Convert string back to matrix
+  const matrix = matrixString.match(new RegExp(`.{1,${cols}}`, 'g')).map(row => row.split('').map(element => (element === '9' ? -1 : parseInt(element))));
+  return matrix;
+}
+
 
 // Navigation
 
@@ -1063,6 +989,14 @@ document.querySelector(".menu-options").addEventListener("click", function() {
     document.querySelector(".box-options").style.display = "flex";
 });
 
+document.querySelector(".menu-import").addEventListener("click", function() {
+    closeNavMenus()
+    document.querySelector(".box-menu").style.display = "flex";
+    document.querySelector(".box-import").style.display = "flex";
+
+    document.querySelector(".import-textarea").value = encodeMatrix(game);
+});
+
 
 document.querySelectorAll(".close-controls").forEach(function(element) {
     element.addEventListener("click", function() {
@@ -1081,6 +1015,7 @@ function closeNavMenus() {
     document.querySelector(".box-controls").style.display = "none";
     document.querySelector(".box-size").style.display = "none";
     document.querySelector(".box-options").style.display = "none";
+    document.querySelector(".box-import").style.display = "none";
 }
 
 document.querySelector('.long-tap-option').addEventListener('input', function() {

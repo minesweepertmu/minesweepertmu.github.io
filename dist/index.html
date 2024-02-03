@@ -23,6 +23,8 @@
         <a href="javascript:void(0);" class="menu-controls">Controls</a>
         |
         <a href="javascript:void(0);" class="menu-options">Options</a>
+        |
+        <a href="javascript:void(0);" class="menu-import">Export/Import</a>
     </div>
     <div class="box-menu">
         <div class="box-controls">
@@ -135,6 +137,32 @@
                 <label class="options-label" for="long-tap-option">Long tap duration on mobile, in milliseconds. Default value is 250ms</label>
                 <input type="range" id="long-tap-option" class="long-tap-option" min="150" max="500" step="10" value="250" disabled="true" />
                 <p class="long-tap-option-setting current-value">Current Value: 250</p>
+            </div>
+        </div>
+        <div class="box-import">
+            <div class="controls-top">
+                <p>
+                    Import/Export a game:
+                </p>
+                <div class="close-controls">
+                </div>
+            </div>
+            <div class="import-container">
+                <div class="import-import">
+                    <p class="import-title">Import a game:</p>
+                    <input type="text" class="input-import">
+                    <div class="checkbox-container">
+                        <input type="checkbox" name="new_game" class="new_game_checkbox">
+                        <label for="new-game">Start the game from the begining?</label>
+                    </div>
+                    <div class="import-button">
+                        <button>Import</button>
+                    </div>
+                </div>
+                <div class="import-export">
+                    <p class="import-title">Export this game:</p>
+                    <textarea name="export" class="input-import import-textarea" readonly></textarea>
+                </div>
             </div>
         </div>
     </div>
