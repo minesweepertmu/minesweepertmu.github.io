@@ -160,13 +160,20 @@
                         <input type="checkbox" id="new_game" name="new_game" class="new_game_checkbox" checked disabled>
                         <label for="new_game">Start the game from the begining?</label>
                     </div>
+                    <p class="import-info">
+                        Importing will disable "First tap is safe" setting.
+                    </p>
                     <div class="import-button">
                         <button class='import-button-click'>Import</button>
                     </div>
+                    <p class="error-message-prompt"></p>
                 </div>
                 <div class="import-export">
                     <p class="import-title">Export this game:</p>
                     <textarea name="export" class="input-import import-textarea" readonly></textarea>
+                    <div class="copy-button">
+                        <button class='import-button-copy'>Copy</button>
+                    </div>
                 </div>
             </div>
         </div>

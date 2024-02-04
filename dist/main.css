@@ -483,7 +483,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 18px;
 }
 
-.import-button {
+.import-button, .copy-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -499,6 +499,17 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-block-start: 10px;
     margin-block-end: 10px;
     font-size: 18px;
+}
+
+.import-info {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.import-import .error-message-prompt {
+    font-size: 20px;
+    margin: 0;
+    margin-top: 10px;
 }
 
 hr {

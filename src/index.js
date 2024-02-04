@@ -7,7 +7,7 @@ import {
     numberColorsHex, darkNumberColorsHex, lightModeColors, darkModeColors, firebaseConfig 
 } from "./constants.js";
 
-let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios, firstTapIsSafe;
+let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios, firstTapIsSafe, importedGame;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
@@ -39,7 +39,6 @@ function applySettings() {
     document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${settings["long-tap"]}`;
 
     firstTapIsSafe = settings["firstTapIsSafe"];
-    console.log(firstTapIsSafe)
     document.querySelector('.first-tap-safe-check').checked = firstTapIsSafe;
 }
 
@@ -109,6 +108,7 @@ function applyColorPalette(colorPalette) {
 //SWITCH TO DARK MODE AUTO
 
 function makeTheMineLawn(rows, cols, x = -1, y = -1, ev = 0, allFlags = [], lotMines = false) {
+    importedGame = false;
     seconds = 0
     currentFlags = mines
     game = []
@@ -205,6 +205,10 @@ function setJSONHighScores() {
 setJSONHighScores()
 
 function updateJSONHighScores(newScore) {
+
+    if(importedGame) {
+        return 0;
+    }
 
     let storedData = JSON.parse(localStorage.getItem('highScoresSelf'));
     storedData.easy.sort((a, b) => a - b);
@@ -1059,8 +1063,46 @@ document.querySelectorAll('.hs-a').forEach((elem) => {
 
 
 document.querySelector(".import-button-click").addEventListener('click', () => {
+
     let imported = document.querySelector(".input-import").value;
-    console.log(decodeMatrix(imported))
+    try {
+        let decodedImport = decodeMatrix(imported);
+    }
+    catch (error) {
+        document.querySelector(".error-message-prompt").textContent = "Import impossible. Original messege was altered"
+        return 0;
+    }
+    let decodedImport = decodeMatrix(imported);
+    document.querySelector(".error-message-prompt").textContent = ""
+    if(decodedImport[0].length === decodedImport.at(-1).length) {
+        let importMines = 0;
+        decodedImport.forEach((rows) => {
+            rows.forEach((e) => {
+                if (e <= -2 || e >= 9) {
+                    throw new Error("Import string has been altered")
+                }
+                if (e === -1) {
+                    importMines += 1;
+                }
+            })
+        })
+        rowsG = decodedImport.length;
+        colsG = decodedImport[0].length;
+        mines = importMines;
+        makeTheMineLawn(rowsG, colsG, -1, -1, 0, [], false);
+        stopStopwatch();
+        resetStopwatch();
+        importedGame = true;
+        game = decodedImport;
+        document.querySelector(".first-tap-safe-check").checked = false;
+        settings['firstTapIsSafe'] = false;
+        firstTapIsSafe = false;
+        localStorage.setItem('settings', JSON.stringify(settings));
+        closeNavMenus();
+    }
+    else {
+        throw new Error("Import string has been altered")
+    }
 });
 
 document.querySelector(".first-tap-safe-check").addEventListener('click', () => {
@@ -1076,4 +1118,8 @@ document.querySelector(".first-tap-safe-check").addEventListener('click', () => 
         firstTapIsSafe = false;
         localStorage.setItem('settings', JSON.stringify(settings));
     }
+})
+
+document.querySelector(".import-button-copy").addEventListener('click', (e) => {
+    navigator.clipboard.writeText(document.querySelector(".import-textarea").value);
 })
