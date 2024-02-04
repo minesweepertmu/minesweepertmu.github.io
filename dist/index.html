@@ -137,6 +137,11 @@
                 <label class="options-label" for="long-tap-option">Long tap duration on mobile, in milliseconds. Default value is 250ms</label>
                 <input type="range" id="long-tap-option" class="long-tap-option" min="150" max="500" step="10" value="250" disabled="true" />
                 <p class="long-tap-option-setting current-value">Current Value: 250</p>
+                <p class="options-title">First tap is safe</p>
+                <div class="first-tap-safe">
+                    <label class="options-label" for="first-tap-safe">First tap is safe square</label>
+                    <input type="checkbox" id="first-tap-safe" class="first-tap-safe-check" checked />
+                </div>
             </div>
         </div>
         <div class="box-import">
@@ -152,11 +157,11 @@
                     <p class="import-title">Import a game:</p>
                     <input type="text" class="input-import">
                     <div class="checkbox-container">
-                        <input type="checkbox" name="new_game" class="new_game_checkbox">
-                        <label for="new-game">Start the game from the begining?</label>
+                        <input type="checkbox" id="new_game" name="new_game" class="new_game_checkbox" checked disabled>
+                        <label for="new_game">Start the game from the begining?</label>
                     </div>
                     <div class="import-button">
-                        <button>Import</button>
+                        <button class='import-button-click'>Import</button>
                     </div>
                 </div>
                 <div class="import-export">

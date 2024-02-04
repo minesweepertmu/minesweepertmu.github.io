@@ -501,6 +501,12 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 18px;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid black; /* Change color and style as needed */
+  height: 1px; /* Set the height to create a visible line */
+  margin: 1em 0; /* Adjust margin as needed */
+}
 
 input[type="range"]::-webkit-slider-runnable-track {
     background: var(--text-color-main);

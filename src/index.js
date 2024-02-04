@@ -7,12 +7,13 @@ import {
     numberColorsHex, darkNumberColorsHex, lightModeColors, darkModeColors, firebaseConfig 
 } from "./constants.js";
 
-let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios;
+let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios, firstTapIsSafe;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
 let settings = {
     "long-tap": 250,
+    "firstTapIsSafe": true,
 }
 
 let currentPallete = numberColorsHex;
@@ -24,8 +25,9 @@ let db = getFirestore();
 
 function applySettings() {
     let settingsTemp = JSON.parse(localStorage.getItem('settings'));
-    if (!settingsTemp) {
+    if (!settingsTemp || !settingsTemp["firstTapIsSafe"]) {
         localStorage.setItem('settings', JSON.stringify(settings));
+        firstTapIsSafe = true;
         return 0;
     }
     settings = settingsTemp
@@ -35,6 +37,10 @@ function applySettings() {
         document.querySelector(".long-tap-option").removeAttribute("disabled");
     }
     document.querySelector('.long-tap-option-setting').textContent = `Current Value: ${settings["long-tap"]}`;
+
+    firstTapIsSafe = settings["firstTapIsSafe"];
+    console.log(firstTapIsSafe)
+    document.querySelector('.first-tap-safe-check').checked = firstTapIsSafe;
 }
 
 applySettings()
@@ -472,9 +478,11 @@ function onFirstClick(event) {
     document.querySelector(".new-hs-container").style.display = "none"
 
     idArray = event.target.id.split("/")
-
     if (event.target.classList.contains("flagged")) {
-        return 0
+        return 0;
+    } else if (!firstTapIsSafe) {
+        startStopwatch()
+        inGameButtonClick(event.target)
     } else if (rowsG * colsG <= parseInt(mines) + 8) {
         if (game[idArray[0]][idArray[1]] !== -1) {
             startStopwatch()
@@ -1048,3 +1056,24 @@ document.querySelectorAll('.hs-a').forEach((elem) => {
         }
     })
 });
+
+
+document.querySelector(".import-button-click").addEventListener('click', () => {
+    let imported = document.querySelector(".input-import").value;
+    console.log(decodeMatrix(imported))
+});
+
+document.querySelector(".first-tap-safe-check").addEventListener('click', () => {
+    let checkbox = document.querySelector(".first-tap-safe-check");
+
+    if(checkbox.checked) {
+        settings['firstTapIsSafe'] = true;
+        firstTapIsSafe = true;
+        localStorage.setItem('settings', JSON.stringify(settings));
+    }
+    else {
+        settings['firstTapIsSafe'] = false;
+        firstTapIsSafe = false;
+        localStorage.setItem('settings', JSON.stringify(settings));
+    }
+})
