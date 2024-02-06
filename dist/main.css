@@ -188,7 +188,7 @@ p {
 }
 
 .lost-tile {
-	background-color: var(--mine-color);
+    background-color: var(--mine-color);
 }
 
 .game-info-container {
@@ -391,7 +391,8 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
 }
 
-.box-menu input[type="button"], button {
+.box-menu input[type="button"],
+button {
     border: 3.5px outset;
     background-color: var(--secondary-color);
     font-family: 'teko';
@@ -401,7 +402,8 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 5px 15px;
 }
 
-.box-menu input[type="button"]:active, button:active {
+.box-menu input[type="button"]:active,
+button:active {
     background-position: right 3.5px bottom 3.5px;
     border: 3.5px inset;
     padding: 7px 13px 3px 17px;
@@ -423,7 +425,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .import-export textarea {
     height: 100px;
-    font-size:18px;
+    font-size: 18px;
 }
 
 
@@ -450,7 +452,8 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 90%;
 }
 
-.options-title, .import-title {
+.options-title,
+.import-title {
     margin-block-start: 0;
     margin-block-end: 0;
     margin-inline-start: 0px;
@@ -474,7 +477,7 @@ input[type="number"]::-webkit-outer-spin-button {
     resize: none;
 }
 
-.import-container > div {
+.import-container>div {
     display: flex;
     flex-direction: column;
 }
@@ -483,7 +486,8 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 18px;
 }
 
-.import-button, .copy-button {
+.import-button,
+.copy-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -506,6 +510,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
     margin-bottom: 10px;
 }
+
 .import-import .error-message-prompt {
     font-size: 20px;
     margin: 0;
@@ -513,10 +518,13 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 hr {
-  border: none;
-  border-top: 1px solid black; /* Change color and style as needed */
-  height: 1px; /* Set the height to create a visible line */
-  margin: 1em 0; /* Adjust margin as needed */
+    border: none;
+    border-top: 1px solid black;
+    /* Change color and style as needed */
+    height: 1px;
+    /* Set the height to create a visible line */
+    margin: 1em 0;
+    /* Adjust margin as needed */
 }
 
 input[type="range"]::-webkit-slider-runnable-track {

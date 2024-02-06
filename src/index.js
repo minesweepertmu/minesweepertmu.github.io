@@ -1,13 +1,28 @@
 import { initializeApp } from "firebase/app"
 import {
-    getFirestore, collection, getDocs, updateDoc, doc
+    getFirestore,
+    collection,
+    getDocs,
+    updateDoc,
+    doc
 } from "firebase/firestore"
 
-import { 
-    numberColorsHex, darkNumberColorsHex, lightModeColors, darkModeColors, firebaseConfig 
+import {
+    numberColorsHex,
+    darkNumberColorsHex,
+    lightModeColors,
+    darkModeColors,
+    firebaseConfig
 } from "./constants.js";
 
-let rowsG = 9, colsG = 9, mines = 10, hardness = "easy", game = [], currentFlags = 10, seconds = 0, stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios, firstTapIsSafe, importedGame;
+let rowsG = 9,
+    colsG = 9,
+    mines = 10,
+    hardness = "easy",
+    game = [],
+    currentFlags = 10,
+    seconds = 0,
+    stopwatchInterval, startTimeInMs, endTimeInMs, onMobile, uiMode, modeContainer, openedDivs, gameStatus, i, j, k, l, randomRow, randomCols, currentElement, count, mainGameHTML, newRow, currentCol, currentRecords, idArray, coordinates, parentOfElement, flagSet, allClosedTiles, allFlaggedTiles, intervalInMs, boxRadios, firstTapIsSafe, importedGame;
 
 let namesOfNumbers = ["st", "nd", "rd"]
 
@@ -206,7 +221,7 @@ setJSONHighScores()
 
 function updateJSONHighScores(newScore) {
 
-    if(importedGame) {
+    if (importedGame) {
         return 0;
     }
 
@@ -357,26 +372,26 @@ async function updateHighScoreGlobal(hardData, score) {
 }
 
 /* function makeTheGameHTML(){
-	mainGameHTML = document.querySelector(".main-game")
-	for (i = 0; i < rowsG; i++){
+    mainGameHTML = document.querySelector(".main-game")
+    for (i = 0; i < rowsG; i++){
 
-		newRow = document.createElement("div")
-		newRow.className = "game-row"
-		mainGameHTML.appendChild(newRow)
+        newRow = document.createElement("div")
+        newRow.className = "game-row"
+        mainGameHTML.appendChild(newRow)
 
-		for (j = 0; j < colsG; j++){
-			currentElement = document.createElement("div")
-			currentElement.className = "single-element"
+        for (j = 0; j < colsG; j++){
+            currentElement = document.createElement("div")
+            currentElement.className = "single-element"
 
-			currentCol = document.createElement("p")
-			currentCol.textContent = game[i][j]
+            currentCol = document.createElement("p")
+            currentCol.textContent = game[i][j]
 
-			currentElement.appendChild(currentCol)
-			newRow.appendChild(currentElement)
+            currentElement.appendChild(currentCol)
+            newRow.appendChild(currentElement)
 
-		}
-	}
-	
+        }
+    }
+    
 } */
 
 function makeTheGameHTML2(previousFlags = [], fixAfterSet = false) {
@@ -525,9 +540,9 @@ function changeTheElement(element, action, lost = false) {
         let revealedText = game[idArray[0]][idArray[1]] === 0 ? " " : game[idArray[0]][idArray[1]];
 
         if (revealedText == "-1") {
-				    if (lost == true) {
-				    	parentOfElement.style.backgroundColor = "var(--mine-color)"
-				    }
+            if (lost == true) {
+                parentOfElement.style.backgroundColor = "var(--mine-color)"
+            }
             parentOfElement.style.backgroundImage = `url("multimedia/icons/mine_2.svg")`;
             return 0
         }
@@ -599,7 +614,7 @@ function inGameButtonClick(eventTarget) {
 
     if (game[idArray[0]][idArray[1]] == -1) {
         changeTheElement(eventTarget.id, "open", true)
-        
+
         eventTarget.classList.add("lost-tile");
         stopStopwatch()
         gameStatus = document.querySelector(".game-status")
@@ -665,40 +680,68 @@ function eventListenerForButtons() {
     buttons.forEach(button => {
         button.addEventListener("click", handleButtonClick);
     });
+    onMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-    buttons.forEach(button => {
-        button.addEventListener('contextmenu', function(ev) {
-            ev.preventDefault();
-            if (document.querySelector(".game-status").id == "lose") {
-                return 0;
-            }
 
-            if (ev.target.classList.contains("flagged") || ev.target.parentNode.classList.contains("flagged")) {
-                currentFlags++;
-                document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-                if (ev.target.tagName === "IMG") {
-                    ev.target.parentNode.classList.remove("flagged")
-                    ev.target.remove()
-                    return 0;
-                }
-                ev.target.classList.remove("flagged");
-                ev.target.innerHTML = ""
-
-                //ev.target.innerHTML = " ";
-            } else {
-                currentFlags--;
-                document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-                flagSet = document.createElement("img")
-                flagSet.src = "multimedia/icons/ms_flag.svg"
-                flagSet.style.width = "100%"
-                ev.target.appendChild(flagSet)
-                ev.target.classList.add("flagged")
-                //ev.target.innerHTML = "f";
-            }
-
+    buttons.forEach(el => {
+        if (onMobile) {
+            el.addEventListener('touchstart', startTimerThis, { passive: true });
+            el.addEventListener('touchmove', clearTimerThis, { passive: true });
+            el.addEventListener('touchend', clearTimerThis);
             return 0;
-        }, false);
+        }
+        el.removeEventListener("contextmenu", flagSurroundingElements);
+        el.addEventListener("contextmenu", flagSurroundingElements)
     });
+
+    if (!onMobile) {
+        buttons.forEach(button => {
+            button.addEventListener('contextmenu', (ev) => { flagThisTile(ev) }, false);
+        });
+    }
+}
+
+function startTimerThis(event) {
+    console.log(1)
+    touchTimer = setTimeout(function() {
+        flagThisTile(event)
+    }, settings["long-tap"]);
+}
+
+function clearTimerThis() {
+    clearTimeout(touchTimer);
+}
+
+function flagThisTile(ev) {
+    ev.preventDefault();
+    if (document.querySelector(".game-status").id == "lose") {
+        return 0;
+    }
+
+    if (ev.target.classList.contains("flagged") || ev.target.parentNode.classList.contains("flagged")) {
+        currentFlags++;
+        document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+        if (ev.target.tagName === "IMG") {
+            ev.target.parentNode.classList.remove("flagged")
+            ev.target.remove()
+            return 0;
+        }
+        ev.target.classList.remove("flagged");
+        ev.target.innerHTML = ""
+
+        //ev.target.innerHTML = " ";
+    } else {
+        currentFlags--;
+        document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
+        flagSet = document.createElement("img")
+        flagSet.src = "multimedia/icons/ms_flag.svg"
+        flagSet.style.width = "100%"
+        ev.target.appendChild(flagSet)
+        ev.target.classList.add("flagged")
+        //ev.target.innerHTML = "f";
+    }
+
+    return 0;
 }
 
 function eventListenerForOpened() {
@@ -710,9 +753,9 @@ function eventListenerForOpened() {
     onMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     opened.forEach(el => {
         if (onMobile) {
-            el.addEventListener('touchstart', startTimer, { passive: true });
-            el.addEventListener('touchmove', clearTimer, { passive: true });
-            el.addEventListener('touchend', clearTimer);
+            el.addEventListener('touchstart', startTimerSurr, { passive: true });
+            el.addEventListener('touchmove', clearTimerSurr, { passive: true });
+            el.addEventListener('touchend', clearTimerSurr);
             return 0;
         }
         el.removeEventListener("contextmenu", flagSurroundingElements);
@@ -788,13 +831,13 @@ function openSurroundingElements(ev) {
 
 let touchTimer;
 
-function startTimer(event) {
+function startTimerSurr(event) {
     touchTimer = setTimeout(function() {
         flagSurroundingElements(event, false)
     }, settings["long-tap"]); // Adjust the duration as needed (e.g., 1000 milliseconds for a 1-second long tap)
 }
 
-function clearTimer() {
+function clearTimerSurr() {
     clearTimeout(touchTimer);
 }
 
@@ -960,23 +1003,23 @@ document.querySelector(".main-game2").addEventListener("mouseup", () => {
 })
 
 function matrixToString(matrix) {
-  const colsStr = colsG.toString().padStart(2, '0'); // Convert to string and pad with leading zeros if needed
-  const matrixString = matrix.flat().map(element => (element === -1 ? '9' : element.toString())).join('');
-  return colsStr + matrixString;
+    const colsStr = colsG.toString().padStart(2, '0'); // Convert to string and pad with leading zeros if needed
+    const matrixString = matrix.flat().map(element => (element === -1 ? '9' : element.toString())).join('');
+    return colsStr + matrixString;
 }
 
 function encodeMatrix(matrix) {
-  const matrixString = matrixToString(matrix);
-  return btoa(matrixString); // Base64 encoding
+    const matrixString = matrixToString(matrix);
+    return btoa(matrixString); // Base64 encoding
 }
 
 function decodeMatrix(encodedString) {
-  const decodedString = atob(encodedString); // Base64 decoding
-  const cols = parseInt(decodedString.substring(0, 2)); // Extract number of columns
-  const matrixString = decodedString.substring(2); // Extract matrix string
-  // Convert string back to matrix
-  const matrix = matrixString.match(new RegExp(`.{1,${cols}}`, 'g')).map(row => row.split('').map(element => (element === '9' ? -1 : parseInt(element))));
-  return matrix;
+    const decodedString = atob(encodedString); // Base64 decoding
+    const cols = parseInt(decodedString.substring(0, 2)); // Extract number of columns
+    const matrixString = decodedString.substring(2); // Extract matrix string
+    // Convert string back to matrix
+    const matrix = matrixString.match(new RegExp(`.{1,${cols}}`, 'g')).map(row => row.split('').map(element => (element === '9' ? -1 : parseInt(element))));
+    return matrix;
 }
 
 
@@ -1067,14 +1110,13 @@ document.querySelector(".import-button-click").addEventListener('click', () => {
     let imported = document.querySelector(".input-import").value;
     try {
         let decodedImport = decodeMatrix(imported);
-    }
-    catch (error) {
+    } catch (error) {
         document.querySelector(".error-message-prompt").textContent = "Import impossible. Original messege was altered"
         return 0;
     }
     let decodedImport = decodeMatrix(imported);
     document.querySelector(".error-message-prompt").textContent = ""
-    if(decodedImport[0].length === decodedImport.at(-1).length) {
+    if (decodedImport[0].length === decodedImport.at(-1).length) {
         let importMines = 0;
         decodedImport.forEach((rows) => {
             rows.forEach((e) => {
@@ -1099,8 +1141,7 @@ document.querySelector(".import-button-click").addEventListener('click', () => {
         firstTapIsSafe = false;
         localStorage.setItem('settings', JSON.stringify(settings));
         closeNavMenus();
-    }
-    else {
+    } else {
         throw new Error("Import string has been altered")
     }
 });
@@ -1108,12 +1149,11 @@ document.querySelector(".import-button-click").addEventListener('click', () => {
 document.querySelector(".first-tap-safe-check").addEventListener('click', () => {
     let checkbox = document.querySelector(".first-tap-safe-check");
 
-    if(checkbox.checked) {
+    if (checkbox.checked) {
         settings['firstTapIsSafe'] = true;
         firstTapIsSafe = true;
         localStorage.setItem('settings', JSON.stringify(settings));
-    }
-    else {
+    } else {
         settings['firstTapIsSafe'] = false;
         firstTapIsSafe = false;
         localStorage.setItem('settings', JSON.stringify(settings));
