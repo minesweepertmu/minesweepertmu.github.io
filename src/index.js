@@ -15,6 +15,9 @@ import {
     firebaseConfig
 } from "./constants.js";
 
+import html2canvas from 'html2canvas';
+html2canvas.logging = 'error';
+
 let rowsG = 9,
     colsG = 9,
     mines = 10,
@@ -483,7 +486,7 @@ function makeTheGameHTML2(previousFlags = [], fixAfterSet = false) {
 function handleButtonClick(event) {
     gameStatus = document.querySelector(".game-status")
     if (gameStatus.id === "lose") return 0;
-    if (event.target.classList.contains("flagged") || event.target.classList.contains("closed")) {
+    if (event.target.classList.contains("flagged") || event.target.parentNode.classList.contains("flagged") || event.target.parentNode.parentNode.classList.contains("flagged") || event.target.classList.contains("closed")) {
         return 0;
     } else if ((gameStatus.id === "start") || (gameStatus.id === "lose")) {
         onFirstClick(event);
@@ -570,10 +573,11 @@ function changeTheElement(element, action, lost = false) {
         if (!(element.classList.contains("flagged") || element.parentNode.classList.contains("flagged"))) {
             currentFlags--;
             document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-            flagSet = document.createElement("img")
+            //element.style.backgroundImage = 'url("multimedia/icons/ms_flag.svg")'
+            /*flagSet = document.createElement("img")
             flagSet.src = "multimedia/icons/ms_flag.svg"
-            flagSet.style.width = "100%"
-            element.appendChild(flagSet)
+            flagSet.style.width = "100%"*/
+            element.appendChild(createSvgFlag())
             element.classList.add("flagged")
         }
     } else if (action === "wrongFlag") {
@@ -611,7 +615,13 @@ function openTilesAfterLose() {
 function inGameButtonClick(eventTarget) {
     document.querySelector(".game-status").id = "mid-game"
     idArray = eventTarget.id.split("/");
-
+    //if(event.pointerId === "4") return 0;
+    if(eventTarget.tagName === "svg") {
+        idArray = eventTarget.parentNode.id.split("/");
+    }
+    else if (eventTarget.parentNode.tagName === "svg") {
+        idArray = eventTarget.parentNode.parentNode.id.split("/");
+    }
     if (game[idArray[0]][idArray[1]] == -1) {
         changeTheElement(eventTarget.id, "open", true)
 
@@ -690,8 +700,8 @@ function eventListenerForButtons() {
             el.addEventListener('touchend', clearTimerThis);
             return 0;
         }
-        el.removeEventListener("contextmenu", flagSurroundingElements);
-        el.addEventListener("contextmenu", flagSurroundingElements)
+        /*el.removeEventListener("contextmenu", flagSurroundingElements);
+        el.addEventListener("contextmenu", flagSurroundingElements)*/
     });
 
     if (!onMobile) {
@@ -702,46 +712,85 @@ function eventListenerForButtons() {
 }
 
 function startTimerThis(event) {
-    console.log(1)
+    let eventTarget = event.target.tagName === 'DIV' ? event.target : (event.target.parentNode.tagName === 'DIV' ? event.target.parentNode : event.target.parentNode.parentNode)
+    eventTarget.removeEventListener("click", handleButtonClick)
+
     touchTimer = setTimeout(function() {
         flagThisTile(event)
+        console.log(eventTarget)
+        console.log(1)
+        eventTarget.removeEventListener("click", handleButtonClick)
+        setTimeout(function() {eventTarget.addEventListener("click", handleButtonClick)},300)
     }, settings["long-tap"]);
 }
 
-function clearTimerThis() {
+function clearTimerThis(event) {
     clearTimeout(touchTimer);
+    let eventTarget = event.target;
+    while (eventTarget && eventTarget.tagName !== 'DIV') {
+        eventTarget = eventTarget.parentNode;
+    }
+
+    eventTarget.addEventListener("click", handleButtonClick)
 }
 
 function flagThisTile(ev) {
-    ev.preventDefault();
+    if (ev.cancelable) {
+        ev.preventDefault();
+    }
     if (document.querySelector(".game-status").id == "lose") {
         return 0;
     }
-
-    if (ev.target.classList.contains("flagged") || ev.target.parentNode.classList.contains("flagged")) {
+    if (ev.target.classList.contains("flagged") || ev.target.tagName === "svg" || ev.target.parentNode.tagName === "svg") {
         currentFlags++;
         document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-        if (ev.target.tagName === "IMG") {
+        if (ev.target.tagName === "svg") {
             ev.target.parentNode.classList.remove("flagged")
             ev.target.remove()
             return 0;
         }
+        else if (ev.target.parentNode.tagName === "svg") {
+            ev.target.parentNode.parentNode.classList.remove("flagged")
+            ev.target.parentNode.remove()
+            return 0;
+        }
         ev.target.classList.remove("flagged");
         ev.target.innerHTML = ""
-
+        return 0;
         //ev.target.innerHTML = " ";
     } else {
         currentFlags--;
         document.querySelector(".mines-container").textContent = padWithZeros(currentFlags)
-        flagSet = document.createElement("img")
+        //ev.target.style.backgroundImage = 'url("multimedia/icons/ms_flag.svg")'
+        /*flagSet = document.createElement("img")
         flagSet.src = "multimedia/icons/ms_flag.svg"
-        flagSet.style.width = "100%"
-        ev.target.appendChild(flagSet)
+        flagSet.style.width = "100%"*/
+        ev.target.appendChild(createSvgFlag())
         ev.target.classList.add("flagged")
         //ev.target.innerHTML = "f";
     }
 
     return 0;
+}
+
+function createSvgFlag() {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    svg.setAttribute("viewBox", "0 0 76 76"); // Adjust viewBox as needed
+
+    // Append the SVG content
+    svg.innerHTML = `
+        <style type="text/css">
+            .st0{fill:#E11F23;}
+        </style>
+        <polygon points="38.2,62 38.2,6.3 43.9,6.3 43.9,62 "/>
+        <polygon class="st0" points="43.9,2.6 14.5,21.3 43.9,40 "/>
+        <rect x="27.6" y="56.4" width="26.9" height="7.8"/>
+        <rect x="15.7" y="63.4" width="50.8" height="10"/>
+    `;
+    return svg;
 }
 
 function eventListenerForOpened() {
@@ -775,6 +824,7 @@ function openSurroundingElements(ev) {
 
     let flags = [];
     const idArray = ev.target.id.split(":");
+
     const x = parseInt(idArray[0]);
     const y = parseInt(idArray[1]);
 
@@ -846,7 +896,7 @@ function clearTimerSurr() {
 
 function flagSurroundingElements(event, onDesktop = true) {
     if (onDesktop) {
-        event.preventDefault()
+        event.preventDefault();
     }
 
     if (document.querySelector(".game-status").id === "lose") return 0;
@@ -948,6 +998,20 @@ document.querySelector(".new-box-button").addEventListener("click", function() {
         }
     }
 })
+
+async function takeScreenshotOfDiv() {
+    let divElement = document.querySelector(".playground");
+
+    try {
+        let canvas = await html2canvas(document.querySelector(".game-container"), {
+            logging: false
+        });
+        return canvas;
+
+    } catch (error) {
+        console.error('Error capturing screenshot:', error);
+    }
+}
 
 
 function updateStopwatch() {
@@ -1163,3 +1227,25 @@ document.querySelector(".first-tap-safe-check").addEventListener('click', () => 
 document.querySelector(".import-button-copy").addEventListener('click', (e) => {
     navigator.clipboard.writeText(document.querySelector(".import-textarea").value);
 })
+
+document.querySelector('.screenshot-link').addEventListener('click', async function(event) {
+    try {
+        let canvas = await takeScreenshotOfDiv();
+
+        if (canvas) {
+            let dataURL = canvas.toDataURL('image/png');
+
+            // Create a temporary anchor element
+            let downloadLink = document.createElement('a');
+            downloadLink.href = dataURL;
+            downloadLink.download = 'canvas_image.png';
+
+            // Simulate a click on the anchor element to trigger download
+            downloadLink.click();
+        } else {
+            console.error('Canvas not available');
+        }
+    } catch (error) {
+        console.error('Error capturing screenshot:', error);
+    }
+});

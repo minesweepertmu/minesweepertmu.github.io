@@ -642,6 +642,17 @@ input[type="range"]::-moz-range-track {
     padding: 7px 13px 3px 17px;
 }
 
+.flagged {
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: center;
+}
+
+.screenshot-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
 
 @media screen and (max-width: 600px) {
     .highscore-table {
